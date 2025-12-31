@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependências
+node_modules/
+
+# Build/Output
+dist/
+dist-ssr/
+build/      # Create React App output
+.serve/
+
+# Environment variables
+.env
+.env.*.local
+
+# IDEs / Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Sistema
+.DS_Store
+
+# Test coverage
+coverage/
+
+# Cache de pacotes
+.pnp.*
+.cache/
+
+# GitHub Pages branch (opcional)
+gh-pages/
