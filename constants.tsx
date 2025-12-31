@@ -94,7 +94,7 @@ export const SOCIALS = [
 ];
 
 export const EMAIL_JS_CONFIG = {
-  SERVICE_ID: 'service_tn0vxvr',
+  SERVICE_ID: 'service_m7ac0b9',
   TEMPLATE_ID: 'template_sjdv2fb',
   PUBLIC_KEY: 'wGh-QmzuTd8xhcG2Z',
   DESTINATION_EMAIL: 'thiagopassos.dev@gmail.com'
