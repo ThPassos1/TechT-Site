@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { GRADIENTS } from '../../constants';
-import { SITE_CONFIG } from '../../siteConfig';
+import { useSiteConfig } from '../../hooks/useSiteConfig';
 
 interface LogoProps {
   className?: string;
@@ -13,7 +13,7 @@ interface LogoProps {
  * Reconstrução fiel e definitiva da logo "TP" baseada na imagem do usuário.
  */
 const Logo: React.FC<LogoProps> = ({ className = "h-12", showText = true }) => {
-  const { brand } = SITE_CONFIG;
+  const { brand } = useSiteConfig();
 
   return (
     <div className={`flex items-center gap-4 ${className}`}>
@@ -75,10 +75,10 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", showText = true }) => {
 
       {showText && (
         <div className="flex flex-col justify-center border-l border-white/10 pl-4 h-10">
-          <span className="text-white font-bold text-lg lg:text-2xl tracking-[0.2em] leading-none font-mono uppercase">
-            {brand.name}<span className={GRADIENTS.text}>{brand.highlight}</span>
+          <span className="text-white font-bold text-base lg:text-xl tracking-[0.18em] leading-none font-mono uppercase">
+            {brand.name}{brand.highlight ? <span className={GRADIENTS.text}>{brand.highlight}</span> : null}
           </span>
-          <span className="text-[7px] lg:text-[8px] text-[#00D2FF] tracking-[0.4em] font-bold uppercase opacity-80 mt-1">
+          <span className="text-[7px] sm:text-[8px] text-[#00D2FF] tracking-[0.24em] font-bold uppercase opacity-80 mt-1">
             {brand.tagline}
           </span>
         </div>

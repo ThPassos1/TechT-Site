@@ -3,12 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { NAVIGATION, GRADIENTS, SOCIALS } from '../../constants';
+import { GRADIENTS, SOCIALS, WHATSAPP_URL } from '../../constants';
 import Container from '../ui/Container';
 import Logo from '../ui/Logo';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
+import { UI_TEXT, getNavigation } from '../../i18n/ui';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { locale, toggleLocale } = useAppPreferences();
+  const ui = UI_TEXT[locale];
+  const nav = getNavigation(locale);
 
   // Bloquear scroll quando o menu estiver aberto para evitar que o fundo se mova
   useEffect(() => {
@@ -19,6 +25,13 @@ const Header: React.FC = () => {
     }
     return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Fix: Explicitly define the Variants type to resolve 'string' not assignable to 'AnimationGeneratorType' in transition
   const menuVariants: Variants = {
@@ -36,38 +49,50 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-[100] bg-[#050505]/90 backdrop-blur-xl border-b border-white/5">
-        <Container className="h-20 lg:h-24 flex items-center justify-between">
+      <header
+        className={`fixed top-0 left-0 w-full z-[100] border-b transition-all duration-500 ${
+          isScrolled
+            ? 'bg-[#050505]/80 backdrop-blur-2xl border-white/10 shadow-[0_12px_35px_rgba(0,0,0,0.35)]'
+            : 'bg-[#050505]/55 backdrop-blur-xl border-white/5'
+        }`}
+      >
+        <Container className="h-20 lg:h-24 flex items-center">
           <Link to="/" className="hover:opacity-90 transition-all duration-300 relative z-10">
             <Logo showText={true} className="h-10 lg:h-12" />
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-10">
-            {NAVIGATION.map((item) => (
+          <nav className="hidden lg:flex items-center space-x-10 ml-16">
+            {nav.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-[#00D2FF] transition-all duration-300"
+                className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-[#00D2FF] hover:-translate-y-0.5 transition-all duration-300"
               >
                 {item.name}
               </Link>
             ))}
-            <a 
-              href="https://wa.me/+559293627266" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 ${GRADIENTS.primary} text-black shadow-[0_0_25px_rgba(0,210,255,0.4)]`}
+            <button
+              type="button"
+              onClick={toggleLocale}
+              className="px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-xs font-bold tracking-wider text-gray-300 hover:text-[#00D2FF] transition-colors"
+              aria-label="Toggle language"
             >
-              Orçamento
-            </a>
+              {locale === 'pt' ? 'EN' : 'PT'}
+            </button>
+            <Link
+              to="/contato"
+              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 ${GRADIENTS.primary} text-black shadow-[0_0_25px_rgba(0,210,255,0.4)] hover:shadow-[0_0_35px_rgba(146,95,255,0.34)]`}
+            >
+              {ui.start}
+            </Link>
           </nav>
 
           {/* Mobile Toggle Button */}
           <button 
-            className="lg:hidden text-white p-2.5 rounded-xl bg-white/5 border border-white/10 active:scale-90 transition-transform"
+            className="ml-auto lg:hidden text-white p-2.5 rounded-xl bg-white/5 border border-white/10 active:scale-90 transition-transform"
             onClick={() => setIsOpen(true)}
-            aria-label="Abrir Menu"
+            aria-label={ui.openMenu}
           >
             <Menu size={28} />
           </button>
@@ -98,7 +123,7 @@ const Header: React.FC = () => {
             {/* Navigation Links - REMOVED justify-center to fix missing top items */}
             <div className="flex-grow flex flex-col px-8 py-12 overflow-y-auto">
               <nav className="space-y-4">
-                {NAVIGATION.map((item, idx) => (
+                {nav.map((item, idx) => (
                   <motion.div
                     key={item.name}
                     initial={{ opacity: 0, y: 20 }}
@@ -122,15 +147,33 @@ const Header: React.FC = () => {
               </nav>
 
               {/* Action Area */}
-              <div className="mt-12 space-y-6 pb-8">
-                <a 
-                  href="https://wa.me/+559293627266"
+              <div className="mt-12 space-y-4 pb-8">
+                <Link
+                  to="/contato"
+                  onClick={() => setIsOpen(false)}
+                  className={`block w-full py-4 text-center rounded-2xl font-bold text-lg uppercase tracking-widest ${GRADIENTS.primary} text-black shadow-[0_0_30px_rgba(0,210,255,0.4)]`}
+                >
+                  {ui.start}
+                </Link>
+
+                <a
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`block w-full py-6 text-center rounded-2xl font-bold text-xl uppercase tracking-widest ${GRADIENTS.primary} text-black shadow-[0_0_30px_rgba(0,210,255,0.4)]`}
+                  className="block w-full py-3 text-center text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-[#00D2FF] transition-colors"
                 >
-                  SOLICITAR ORÇAMENTO
+                  {ui.whatsappDirect}
                 </a>
+
+                <div className="grid grid-cols-1 gap-3">
+                  <button
+                    type="button"
+                    onClick={toggleLocale}
+                    className="py-2 rounded-xl border border-white/10 bg-white/5 text-xs font-bold text-gray-300"
+                  >
+                    {locale === 'pt' ? 'English' : 'Português'}
+                  </button>
+                </div>
 
                 {/* Social Links Small */}
                 <div className="flex justify-center gap-8 py-4">
@@ -152,7 +195,7 @@ const Header: React.FC = () => {
             {/* Bottom Tagline */}
             <div className="p-8 text-center border-t border-white/5 flex-shrink-0 bg-black">
               <p className="text-[10px] text-gray-700 uppercase tracking-[0.5em] font-bold">
-                TechT • Evolução Digital de Elite
+                {ui.menuTagline}
               </p>
             </div>
           </motion.div>

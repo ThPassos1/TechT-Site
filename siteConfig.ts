@@ -14,33 +14,130 @@ import barbearia from "./assets/images/portfolio/barbearia.png";
 import sistemas from "./assets/images/portfolio/sistemas.png";
 
 import blogCriptografiaImg from "./assets/images/blog/criptografiaquantica.png";
+import { getOfferings } from "./offeringsData";
+import type { Locale } from "./context/AppPreferencesContext";
 
-export const SITE_CONFIG = {
+const SITE_CONFIG_PT = {
   // Identidade da Marca
   brand: {
-    name: "TECH",
-    highlight: "T",
+    name: "TECHT",
+    highlight: "",
     tagline: "Evolução Digital",
     logoGlow: "#00D2FF",
-    logoImage: logoImage, // agora usando import
+    logoImage: logoImage,
   },
 
-  // Seção Hero (Início)
   hero: {
-    badge: "Evolução Digital & Performance",
-    titlePart1: "Sites, Sistemas e ",
-    titleHighlight: "Tráfego Pago",
-    titlePart2: " de Elite.",
+    badge: "TechT — operação completa de marketing (Manaus & remoto)",
+    titlePart1: "Do primeiro cliente à ",
+    titleHighlight: "venda",
+    titlePart2: ", num só ecossistema.",
     description:
-      "A TechT une engenharia de software de ponta com estratégias de tráfego agressivas para impulsionar seu faturamento no ambiente digital.",
-    ctaButton: "Quero Crescer Agora",
+      "Você contrata uma operação completa de marketing para adquirir clientes com consistência. Da mídia ao fechamento, cada etapa reduz desperdício e aumenta previsibilidade. A IA apoia validações e análises; estratégia e execução seguem com método humano, no Ecossistema TechT.",
+    ctaButton: "Quero estruturar minha operação de marketing",
+    ctaSecondary: "Ver a plataforma",
+    primaryWaMessage:
+      "Olá! Vim pelo site da TechT. Quero entender como vocês estruturam uma operação completa de marketing (do primeiro cliente à venda) e como o Ecossistema TechT organiza execução, análises e decisões.",
   },
 
-  // BLOG
+  offerings: getOfferings('pt'),
+
+  intelligence: {
+    badge: "Ecossistema TechT",
+    title: "A ",
+    titleHighlight: "central de operação",
+    titleSuffix: " da agência",
+    description:
+      "SaaS multi-cliente para organizar a operação da agência: CRM, tráfego, portal do cliente, agenda, automações, financeiro e analytics. A camada de IA apoia validações, priorização e leitura de cenário (sem substituir decisão). WhatsApp integrado, fluxos (ex.: n8n), login seguro e área admin. Interface moderna; backend e banco profissionais por trás.",
+  },
+
+  about: {
+    badge: "Sobre nós",
+    title: "Arquitetando o ",
+    titleHighlight: "Futuro",
+    titleSuffix: " através do Código.",
+    image: aboutImage,
+    description:
+      "A TechT é liderada por Thiago Passos e une marketing de performance, conteúdo e engenharia de software num pacote pensado para empresas que levam aquisição a sério. A IA está presente no processo e nos sistemas para apoiar análises e prioridades — o protagonista continua sendo uma operação de marketing bem executada, etapa por etapa.",
+    founderName: "Thiago Passos",
+    stats: {
+      label: "Projetos entregues",
+      year: "2026",
+      count: "+50",
+    },
+    purpose: {
+      title: "Inovação",
+      text: "Estratégia e execução com stack atual: performance, UX e ferramentas que dão clareza para decidir melhor na aquisição.",
+    },
+    expertise: {
+      title: "Suporte",
+      text: "Perto do seu time depois do go-live: campanhas, automações e plataforma evoluindo junto com o negócio.",
+    },
+  },
+
+  // SEÇÃO Portfolio (MANTÉM)
+  portfolio: [
+    {
+      id: "institutional-sites",
+      title: "Operação com CRM e funil",
+      description:
+        "Tráfego, páginas de captura e acompanhamento de oportunidades em um fluxo único.",
+      category: "Case de Sucesso",
+      imageUrl:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+      tags: ["Growth", "Lead Gen", "Automação"],
+    },
+    {
+      id: "landingpage",
+      title: "Landing Pages de Conversão",
+      description:
+        "Páginas que convertem 8-12% do tráfego em leads qualificados.",
+      category: "Presença Digital",
+      imageUrl: landingpage,
+      tags: ["CRO", "Copy", "UX"],
+    },
+    {
+      id: "ecomerce",
+      title: "E-commerce com IA",
+      description:
+        "Loja online que oferece produtos via recomendação inteligente.",
+      category: "E-commerce",
+      imageUrl: ecomerce,
+      tags: ["Vendas", "IA", "Automação"],
+    },
+    {
+      id: "agencia-de-viagem",
+      title: "Agência Digital de Serviços",
+      description: "Sistema completo de vendas online para prestadores.",
+      category: "SaaS",
+      imageUrl: agenciadeviagem,
+      tags: ["Booking", "Payment", "CRM"],
+    },
+    {
+      id: "barbearia",
+      title: "Sistema de Agendamento Automatizado",
+      description:
+        "CRM + Agendamento + Lembretes automáticos reduzem no-shows em 95%.",
+      category: "Operações",
+      imageUrl: barbearia,
+      tags: ["Automação", "WhatsApp", "CRM"],
+    },
+    {
+      id: "sistemas",
+      title: "Dashboards de Inteligência",
+      description:
+        "Visualização em tempo real de leads, conversões, ROI e faturamento.",
+      category: "Analytics",
+      imageUrl: sistemas,
+      tags: ["BI", "Analytics", "Real-time"],
+    },
+  ],
+
+  // SEÇÃO Blog (MANTÉM)
   blog: {
-    title: "Insights Tecnológicos",
+    title: "Conteúdo TechT",
     subtitle:
-      "Explorando a próxima fronteira da inovação digital e estratégias de growth.",
+      "Tráfego pago, CRM, automação e cases reais — para quem leva crescimento a sério.",
     posts: [
       {
         id: "post-1",
@@ -50,7 +147,7 @@ export const SITE_CONFIG = {
         date: "24 de Outubro, 2025",
         author: "Thiago Passos",
         category: "CIBERSEGURANÇA",
-        image: blogCriptografiaImg, // import usado
+        image: blogCriptografiaImg,
         imageCaption: "Criptografia Quântica: segurança do futuro",
         content: `
           <p class="mb-4 leading-relaxed">
@@ -104,168 +201,109 @@ export const SITE_CONFIG = {
       },
       {
         id: "post-2",
-        title: "Otimização de Conversão (CRO) para Landing Pages de Alta Escala",
+        title: "Geração de Leads com IA: Dobrar Conversões em 90 Dias",
         excerpt:
-          "Descubra os segredos psicológicos por trás das páginas que convertem 3x mais que a média do mercado.",
+          "Estratégia passo a passo que nossos clientes usam para gerar mais leads qualificados com automação inteligente.",
         date: "15 de Outubro, 2024",
-        author: "Thiago Passos",
-        category: "PERFORMANCE",
-      },
-      {
-        id: "post-3",
-        title: "Arquitetura Serverless com Node.js e Google Cloud",
-        excerpt:
-          "Reduza custos de infraestrutura e aumente a escalabilidade do seu sistema usando funções sem servidor.",
-        date: "05 de Outubro, 2024",
-        author: "Thiago Passos",
-        category: "ENGENHARIA",
-      },
-      {
-        id: "post-4",
-        title: "A Revolução do Tráfego Pago com IA no Meta Ads",
-        excerpt:
-          "Como os novos algoritmos de inteligência artificial do Facebook estão mudando a forma como segmentamos públicos.",
-        date: "28 de Setembro, 2024",
         author: "Thiago Passos",
         category: "GROWTH",
       },
-    ],
-  },
-
-  // PORTFÓLIO
-  portfolio: [
-    {
-      id: "institutional-sites",
-      title: "Sites Institucionais de Elite",
-      description:
-        "Desenvolvimento de presença digital robusta com foco em autoridade de marca e carregamento instantâneo.",
-      category: "Presença Digital",
-      imageUrl:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
-      tags: ["Performance", "UX/UI", "SEO"],
-    },
-    {
-      id: "landingpage",
-      title: "Landing Pages de Alta Conversão",
-      description:
-        "Geração de leads, aumento de conversões, promoção de ofertas específicas e redução do custo de aquisição de clientes (CAC).",
-      category: "Presença Digital",
-      imageUrl: landingpage,
-      tags: ["Performance", "UX/UI", "SEO"],
-    },
-    {
-      id: "ecomerce",
-      title: "E-commerces Escaláveis",
-      description:
-        "Lojas virtuais de alta performance preparadas para grandes volumes de tráfego e checkout seguro.",
-      category: "Growth",
-      imageUrl: ecomerce,
-      tags: ["Direct Response", "Scale", "Copy"],
-    },
-    {
-      id: "agencia-de-viagem",
-      title: "Agência de Viagem",
-      description: "Seus Clientes merecem o Melhor.",
-      category: "Vendas Online",
-      imageUrl: agenciadeviagem,
-      tags: ["Shopify", "WooCommerce", "Payment APIs"],
-    },
-    {
-      id: "barbearia",
-      title: "Barbearia Online",
-      description:
-        "Soluções de software complexas desenvolvidas sob medida para resolver dores específicas do seu negócio.",
-      category: "Engenharia",
-      imageUrl: barbearia,
-      tags: ["Node.js", "React", "Cloud"],
-    },
-    {
-      id: "sistemas",
-      title: "Dashboards",
-      description:
-        "Visualização de dados em tempo real para tomada de decisão baseada em números, não em achismos.",
-      category: "Inteligência",
-      imageUrl: sistemas,
-      tags: ["Business Intelligence", "Analytics", "Data"],
-    },
-  ],
-
-  // Seção Intelligence (Painel de Gerenciamento)
-  intelligence: {
-    badge: "TechT Intelligence",
-    title: "Sua Operação com ",
-    titleHighlight: "Transparência",
-    titleSuffix: " Total.",
-    description:
-      "Esqueça relatórios estáticos em PDF. Nosso sistema proprietário consolida dados de todas as suas fontes de tráfego em um dashboard vivo e inteligente.",
-    metrics: [
-      { label: "Investimento Total", value: "R$ 84.520,50", trend: "+12.5%" },
-      { label: "Conversões Totais", value: "2.150", trend: "+8.2%" },
-      { label: "ROAS Médio", value: "4.09x", trend: "+2.1%" },
-      { label: "Faturamento Gerado", value: "R$ 345.800,00", trend: "+14.8%" },
-    ],
-  },
-
-  // Seção Tráfego Pago
-  traffic: {
-    badge: "Growth & Performance",
-    title: "Vendas no ",
-    titleHighlight: "Automático",
-    titleSuffix: " com Tráfego de Elite.",
-    description:
-      "Não fazemos apenas anúncios. Construímos funis de vendas de alta performance que utilizam inteligência de dados para encontrar seu cliente ideal onde ele estiver.",
-    features: [
       {
-        title: "Meta Ads Expert",
-        desc: "Domínio total de Facebook e Instagram para escala vertical e horizontal de faturamento.",
+        id: "post-3",
+        title: "CRM + Automação: O Stack que Escalou 50 Empresas",
+        excerpt:
+          "Como integrar CRM, chatbot e email automático em um funil que roda 24 horas sem você.",
+        date: "05 de Outubro, 2024",
+        author: "Thiago Passos",
+        category: "AUTOMAÇÃO",
       },
       {
-        title: "Google Ads (Search)",
-        desc: "Apareça para quem já está procurando pelo seu produto ou serviço no momento da decisão.",
-      },
-      {
-        title: "Data Intelligence",
-        desc: "Instalação avançada de Pixel, API de Conversão e rastreamento para ROI real.",
-      },
-      {
-        title: "Relatórios de Elite",
-        desc: "Dashboards em tempo real para você acompanhar cada centavo investido e retornado.",
+        id: "post-4",
+        title: "Meta Ads + Google Ads: Máquina Híbrida de Clientes",
+        excerpt:
+          "Combinar tráfego pago em duas plataformas é a receita secreta de empresas que geram mais de 100K/mês.",
+        date: "28 de Setembro, 2024",
+        author: "Thiago Passos",
+        category: "TRÁFEGO",
       },
     ],
   },
 
-  // Seção Sobre
-  about: {
-    badge: "Nossa Essência",
-    title: "Arquitetando o ",
-    titleHighlight: "Futuro",
-    titleSuffix: " através do Código.",
-    image: aboutImage, // ← corrigido para usar import
-    description:
-      "A TechT nasceu da visão de que o desenvolvimento de software não deve ser apenas funcional, mas uma obra de arte tecnológica. Sob a liderança de Thiago Passos, transformamos desafios complexos em ecossistemas digitais fluidos.",
-    founderName: "Thiago Passos",
-    stats: {
-      label: "Projetos Entregues em",
-      year: "2024",
-      count: "+10",
-    },
-    purpose: {
-      title: "Propósito",
-      text: "Empoderar marcas através de tecnologia de ponta e estratégias de conversão agressivas.",
-    },
-    expertise: {
-      title: "Expertise",
-      text: "Dominamos o full-stack moderno para criar sistemas que não apenas funcionam, mas escalam com segurança.",
-    },
-  },
-
-  // Seção de Contato
+  // SEÇÃO Contact (renomeado para "Entre em Contato")
   contact: {
     title: "Inicie sua ",
     titleHighlight: "Transformação",
+    titleSuffix: "",
     description:
-      "Pronto para elevar seu ecossistema digital? Fale com nosso time de especialistas para arquitetar sua presença online.",
+      "Conte seu nicho, ticket e meta de crescimento. Desenhamos o plano da sua operação de marketing, com etapas claras, prioridades reais e o melhor próximo passo para aquisição.",
     email: "thiagopassos.dev@gmail.com",
     location: "Manaus - AM | Atendimento Global",
   },
+} as const;
+
+export const getSiteConfig = (locale: Locale) => {
+  if (locale === 'en') {
+    return {
+      ...SITE_CONFIG_PT,
+      brand: {
+        ...SITE_CONFIG_PT.brand,
+        tagline: 'Digital Evolution',
+      },
+      hero: {
+        badge: 'TechT — complete marketing operation (Manaus & remote)',
+        titlePart1: 'From first customer to ',
+        titleHighlight: 'sale',
+        titlePart2: ', in one ecosystem.',
+        description:
+          'You hire a complete marketing operation to acquire customers consistently. From media to closing, each stage reduces waste and increases predictability. AI supports validation and analysis; strategy and execution remain human-led inside TechT Ecosystem.',
+        ctaButton: 'I want to structure my marketing operation',
+        ctaSecondary: 'See the platform',
+        primaryWaMessage:
+          'Hello! I came from TechT website. I want to understand how you structure a complete marketing operation (from first customer to sale) and how TechT Ecosystem organizes execution, analysis and decisions.',
+      },
+      offerings: getOfferings('en'),
+      intelligence: {
+        badge: 'TechT Ecosystem',
+        title: 'The ',
+        titleHighlight: 'agency operations hub',
+        titleSuffix: '',
+        description:
+          'Multi-tenant SaaS to organize your operation: CRM, traffic, client portal, scheduling, automations, finance and analytics — with an AI layer to support validation, prioritization and data reading (not replacement).',
+      },
+      about: {
+        ...SITE_CONFIG_PT.about,
+        badge: 'About us',
+        title: 'Engineering the ',
+        titleHighlight: 'Future',
+        titleSuffix: ' through code.',
+        description:
+          'TechT is led by Thiago Passos and combines performance marketing, content and software engineering in one package for businesses that take acquisition seriously. AI supports analysis and priorities, while a well-executed marketing operation remains the core.',
+        stats: {
+          ...SITE_CONFIG_PT.about.stats,
+          label: 'Projects delivered',
+        },
+        purpose: {
+          title: 'Innovation',
+          text: 'Strategy and execution with a modern stack: performance, UX and tools that improve decision clarity in acquisition.',
+        },
+        expertise: {
+          title: 'Support',
+          text: 'Close to your team after go-live: campaigns, automations and platform evolving with your business.',
+        },
+      },
+      contact: {
+        ...SITE_CONFIG_PT.contact,
+        title: 'Start your ',
+        titleHighlight: 'Transformation',
+        titleSuffix: '',
+        description:
+          'Tell us your niche, average ticket and growth goals. We design your marketing operation with clear stages, real priorities and a practical next step.',
+        location: 'Manaus - AM | Global service',
+      },
+    };
+  }
+
+  return SITE_CONFIG_PT;
 };
+
+export const SITE_CONFIG = SITE_CONFIG_PT;

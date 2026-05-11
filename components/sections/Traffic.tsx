@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Container from '../ui/Container';
 import { GRADIENTS, TRAFFIC_ICONS } from '../../constants';
 import { SITE_CONFIG } from '../../siteConfig';
+import { AnimatedNumber } from '../ui/AnimatedNumber';
 
 const Traffic: React.FC = () => {
   const { traffic } = SITE_CONFIG;
@@ -74,15 +75,17 @@ const Traffic: React.FC = () => {
                 {/* Simulated Metrics */}
                 <div className="grid grid-cols-2 gap-6 mb-10">
                   {[
-                    { label: 'ROAS Médio', val: '4.8x', color: '#00D2FF' },
-                    { label: 'CPA Reduzido', val: '-32%', color: '#9D50BB' },
-                    { label: 'Leads/Mês', val: '2.4k', color: '#00D2FF' },
-                    { label: 'Escala Ativa', val: '85%', color: '#9D50BB' }
+                    { label: 'ROAS Médio', val: 4.8, suffix: 'x', color: '#00D2FF' },
+                    { label: 'CPA Reduzido', val: -32, suffix: '%', color: '#9D50BB' },
+                    { label: 'Leads/Mês', val: 2.4, suffix: 'k', color: '#00D2FF' },
+                    { label: 'Escala Ativa', val: 85, suffix: '%', color: '#9D50BB' }
                   ].map((m, i) => (
-                    <div key={i} className="space-y-1">
+                    <motion.div key={i} className="space-y-1" whileInView={{ opacity: 1 }} viewport={{ once: true }}>
                       <p className="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">{m.label}</p>
-                      <p className="text-3xl font-bold font-mono" style={{ color: m.color }}>{m.val}</p>
-                    </div>
+                      <p className="text-3xl font-bold font-mono" style={{ color: m.color }}>
+                        <AnimatedNumber value={Math.abs(m.val)} duration={4000} decimals={1} suffix={m.suffix} prefix={m.val < 0 ? '-' : ''} />
+                      </p>
+                    </motion.div>
                   ))}
                 </div>
 

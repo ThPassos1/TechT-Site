@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { sendContactEmail, EmailParams } from '../services/emailService';
+import { trackFormSubmit } from '../components/analytics/GoogleTagManager';
 
 export const useContactForm = () => {
   const [form, setForm] = useState<EmailParams>({ name: '', email: '', message: '' });
@@ -20,11 +21,13 @@ export const useContactForm = () => {
     try {
       await sendContactEmail(form);
       setStatus('success');
+      trackFormSubmit('contact', true);
       setForm({ name: '', email: '', message: '' });
       
       setTimeout(() => setStatus('idle'), 5000);
     } catch (err: any) {
       setStatus('error');
+      trackFormSubmit('contact', false);
       setErrorMsg('Ocorreu um erro ao enviar sua mensagem. Tente novamente.');
     }
   };

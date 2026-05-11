@@ -12,9 +12,10 @@ export const sendContactEmail = async (params: EmailParams) => {
     template_id: EMAIL_JS_CONFIG.TEMPLATE_ID,
     user_id: EMAIL_JS_CONFIG.PUBLIC_KEY,
     template_params: {
-      name: params.name,    // Antes era from_name, agora é name
-      email: params.email,  // Antes era reply_to, agora é email
-      message: params.message // message já estava correto
+      name: params.name,    
+      
+      email: params.email,  
+      message: params.message 
     },
   };
 

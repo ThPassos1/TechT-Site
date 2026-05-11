@@ -3,6 +3,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { SITE_CONFIG } from "../../../siteConfig";
 import Container from "../../ui/Container";
+import SEOHead from "../../SEOHead";
 
 const BlogPost: React.FC = () => {
   // Pega o ID do post da URL
@@ -26,6 +27,16 @@ const BlogPost: React.FC = () => {
 
   return (
     <main className="pt-32 pb-24 bg-[#050505]">
+      <SEOHead 
+        title={`${post.title} | Blogs TechT`}
+        description={post.excerpt}
+        image={post.image || 'https://techtai.com.br/og-image.jpg'}
+        url={`https://techtai.com.br/#/blog/${post.id}`}
+        type="article"
+        author={post.author}
+        publishedDate={post.date}
+        keywords={[post.category, 'blog', 'artigo', 'tech']}
+      />
       <Container>
         <article className="max-w-3xl mx-auto">
           {/* Categoria */}

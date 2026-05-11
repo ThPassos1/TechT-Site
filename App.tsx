@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import SEOHead from './components/SEOHead';
+// import { GoogleTagManager, trackPageView } from './components/analytics/GoogleTagManager'; // TODO: Ativar com GTM ID
 import Hero from './components/sections/Hero';
 import Portfolio from './components/sections/Portfolio';
-import Services from './components/sections/Services';
+import Offerings from './components/sections/Offerings';
 import Contact from './components/sections/Contact';
 import About from './components/sections/About';
-import Traffic from './components/sections/Traffic';
-import Intelligence from './components/sections/Intelligence';
-import { SITE_CONFIG } from './siteConfig';
+import OperationVisual from './components/sections/OperationVisual';
+import { GoogleTagManager, trackPageView } from './components/analytics/GoogleTagManager';
+import { useAppPreferences } from './context/AppPreferencesContext';
+import SectionReveal from './components/effects/SectionReveal';
 
-import Blog from "./components/sections//blog.tsx";
+import Blog from './components/sections/blog.tsx';
 import BlogPost from "./components/sections/blog/BlogPost";
 
 // Hook de Scroll Automático
@@ -20,6 +24,8 @@ const ScrollToSection = () => {
 
   useEffect(() => {
     const targetId = pathname.substring(1);
+
+    trackPageView(pathname || '/');
 
     if (!targetId) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -44,31 +50,85 @@ const ScrollToSection = () => {
   return null;
 };
 
-// HomePage
-const HomePage = () => (
-  <main>
-    <Hero />
-    <About />
-    <Traffic />
-    <Intelligence />
-    <Services />
-    <Portfolio />
-    <Contact />
-  </main>
-);
+const HomePage = () => {
+  const { locale } = useAppPreferences();
+  const seo = locale === 'pt'
+    ? {
+        title: 'TechT — Marketing empresarial completo e Ecossistema TechT (Manaus e remoto)',
+        description:
+          'Pacote de marketing empresarial: tráfego, conteúdo, páginas, WhatsApp e plataforma Ecossistema TechT — CRM, mídia e números num só lugar. IA apoia análises e decisões. Manaus e remoto.',
+        keywords: [
+          'TechT',
+          'marketing empresarial',
+          'agência de marketing Manaus',
+          'tráfego pago Meta Ads',
+          'Google Ads Manaus',
+          'Ecossistema TechT',
+          'CRM integrado',
+          'automação WhatsApp',
+          'landing page conversão',
+          'e-commerce',
+          'sistemas sob medida',
+        ],
+      }
+    : {
+        title: 'TechT — Full marketing operation and TechT Ecosystem',
+        description:
+          'Complete marketing package: paid media, content, landing pages, WhatsApp and TechT Ecosystem platform with CRM, media and metrics in one place.',
+        keywords: [
+          'TechT',
+          'marketing operation',
+          'performance marketing',
+          'Meta Ads',
+          'Google Ads',
+          'CRM platform',
+          'marketing automation',
+          'landing page conversion',
+        ],
+      };
+
+  return (
+    <main>
+      <SEOHead title={seo.title} description={seo.description} keywords={seo.keywords} />
+      <Hero />
+      <SectionReveal delay={0.05}>
+        <OperationVisual />
+      </SectionReveal>
+      <SectionReveal delay={0.05}>
+        <Offerings />
+      </SectionReveal>
+      <SectionReveal delay={0.08}>
+        <About />
+      </SectionReveal>
+      <SectionReveal delay={0.1}>
+        <Portfolio />
+      </SectionReveal>
+      <SectionReveal delay={0.12}>
+        <Contact />
+      </SectionReveal>
+    </main>
+  );
+};
 
 const App: React.FC = () => {
-  return (
-    <Router>
-      <ScrollToSection />
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <div className="flex-grow">
-          <Routes>
+  const gtmId = import.meta.env.VITE_GTM_ID;
+  const AnimatedRoutes = () => {
+    const location = useLocation();
+
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="flex-grow"
+        >
+          <Routes location={location}>
             {/* Páginas principais */}
             <Route path="/" element={<HomePage />} />
             <Route path="/sobre" element={<HomePage />} />
-            <Route path="/trafego" element={<HomePage />} />
             <Route path="/inteligencia" element={<HomePage />} />
             <Route path="/portfolio" element={<HomePage />} />
             <Route path="/servicos" element={<HomePage />} />
@@ -81,7 +141,19 @@ const App: React.FC = () => {
             {/* Fallback */}
             <Route path="*" element={<HomePage />} />
           </Routes>
-        </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
+
+  return (
+    <Router>
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
+      
+      <ScrollToSection />
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <AnimatedRoutes />
         <Footer />
       </div>
     </Router>

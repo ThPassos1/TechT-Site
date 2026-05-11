@@ -1,12 +1,21 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import Container from '../ui/Container';
 import { GRADIENTS } from '../../constants';
-import { SITE_CONFIG } from '../../siteConfig';
+import { AnimatedNumber } from '../ui/AnimatedNumber';
+import { useSiteConfig } from '../../hooks/useSiteConfig';
+import TypewriterHeadline from '../effects/TypewriterHeadline';
 
 const About: React.FC = () => {
-  const { about } = SITE_CONFIG;
+  const { about } = useSiteConfig();
+  const reducedMotion = useReducedMotion();
+  const headingDelay = reducedMotion ? 0 : 0.4;
+  const headingInterval = reducedMotion ? 0 : 105;
+  const headingTextLength = `${about.title}${about.titleHighlight}${about.titleSuffix}`.length;
+  const titleDoneDelay = reducedMotion
+    ? 0
+    : (headingDelay * 1000 + headingTextLength * headingInterval) / 1000 + 0.1;
 
   return (
     <section id="sobre" className="py-24 relative overflow-hidden bg-[#050505]">
@@ -51,11 +60,26 @@ const About: React.FC = () => {
             viewport={{ once: true }}
           >
             <span className="text-xs font-bold text-[#00D2FF] uppercase tracking-[0.3em] mb-4 block">{about.badge}</span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight text-white">
-              {about.title}<span className={GRADIENTS.text}>{about.titleHighlight}</span>{about.titleSuffix}
-            </h2>
+            <TypewriterHeadline
+              as="h2"
+              startOnInView
+              startDelayMs={headingDelay * 1000}
+              charIntervalMs={headingInterval}
+              className="text-4xl md:text-5xl font-bold mb-8 leading-tight text-white"
+              segments={[
+                { text: about.title },
+                { text: about.titleHighlight, className: GRADIENTS.text },
+                { text: about.titleSuffix },
+              ]}
+            />
             
-            <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: titleDoneDelay }}
+              className="space-y-6 text-gray-400 text-lg leading-relaxed"
+            >
               <p>
                 {about.description.split(about.founderName).map((part, i, arr) => (
                   <React.Fragment key={i}>
@@ -81,20 +105,32 @@ const About: React.FC = () => {
                   <p className="text-sm opacity-80">{about.expertise.text}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="mt-12 flex items-center gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: titleDoneDelay + 0.15 }}
+              className="mt-12 flex items-center gap-6"
+            >
               <div className="flex -space-x-3">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-[#050505] bg-white/10 flex items-center justify-center text-[10px] font-bold">
-                    {i === 3 ? about.stats.count : ''}
-                  </div>
+                  <motion.div 
+                    key={i} 
+                    className="w-10 h-10 rounded-full border-2 border-[#050505] bg-white/10 flex items-center justify-center text-[10px] font-bold text-[#00D2FF]"
+                    whileInView={{ scale: [1, 1.2, 1] }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    {i === 3 ? <AnimatedNumber value={parseInt(about.stats.count) || 0} duration={4000} /> : ''}
+                  </motion.div>
                 ))}
               </div>
               <p className="text-xs text-gray-500 uppercase font-bold tracking-widest">
                 {about.stats.label} <span className="text-[#00D2FF]">{about.stats.year}</span>
               </p>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </Container>

@@ -3,9 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../ui/Container';
 import Logo from '../ui/Logo';
-import { NAVIGATION, SOCIALS, GRADIENTS } from '../../constants';
+import { SOCIALS, GRADIENTS } from '../../constants';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
+import { UI_TEXT, getFooterExtraLinks, getNavigation } from '../../i18n/ui';
 
 const Footer: React.FC = () => {
+  const { locale } = useAppPreferences();
+  const footerNav = [...getNavigation(locale), ...getFooterExtraLinks(locale)];
+  const ui = UI_TEXT[locale];
+
   return (
     <footer className="py-20 border-t border-white/5 bg-[#030303]">
       <Container>
@@ -13,14 +19,16 @@ const Footer: React.FC = () => {
           <div className="space-y-6">
             <Logo showText={true} />
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-              Especialistas em arquitetura de sistemas, design artesanal e aceleração de lucro através de tráfego inteligente.
+              {locale === 'pt'
+                ? 'Tráfego pago, social media, desenvolvimento web, WhatsApp e sistema próprio com CRM — da atração ao agendamento com previsibilidade.'
+                : 'Paid media, social content, web development, WhatsApp and a proprietary CRM platform — from acquisition to booked calls with predictability.'}
             </p>
           </div>
 
           <div className="space-y-6">
-            <h4 className="text-white font-bold text-sm uppercase tracking-widest">Navegação</h4>
+            <h4 className="text-white font-bold text-sm uppercase tracking-widest">{ui.footerNavigation}</h4>
             <div className="grid grid-cols-2 gap-4">
-              {NAVIGATION.map(item => (
+              {footerNav.map(item => (
                 <Link 
                   key={item.name} 
                   to={item.href} 
@@ -33,7 +41,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div className="space-y-6">
-            <h4 className="text-white font-bold text-sm uppercase tracking-widest">Conecte-se</h4>
+            <h4 className="text-white font-bold text-sm uppercase tracking-widest">{ui.footerConnect}</h4>
             <div className="flex gap-4">
               {SOCIALS.map(social => (
                 <a 
@@ -55,7 +63,7 @@ const Footer: React.FC = () => {
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-gray-600 text-[10px] uppercase tracking-widest">
-            © 2025 TechT. Desenvolvido por <span className={GRADIENTS.text}>Thiago Passos</span>.
+            {ui.footerCopy} <span className={GRADIENTS.text}>Thiago Passos</span>.
           </p>
           
           <div className="flex items-center space-x-3 text-[10px] font-mono text-gray-600 tracking-tighter">

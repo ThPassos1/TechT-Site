@@ -1,10 +1,6 @@
 
 import React from 'react';
 import { 
-  Code2, 
-  Layers, 
-  TrendingUp, 
-  Zap, 
   Instagram,
   MessageCircle,
   BarChart3,
@@ -30,39 +26,39 @@ export const GRADIENTS = {
   border: 'border-gradient-to-r from-[#00D2FF] to-[#9D50BB]',
 };
 
+/** Número E.164 sem símbolos (55 + DDD + número) — use em wa.me */
+export const WHATSAPP_E164 = '559293627266';
+
+export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_E164}`;
+
+const schedulePrefill = encodeURIComponent(
+  'Olá! Quero agendar uma conversa com a TechT.'
+);
+export const WHATSAPP_SCHEDULE_URL = `${WHATSAPP_URL}?text=${schedulePrefill}`;
+
+export const whatsappPrefill = (message: string) =>
+  `${WHATSAPP_URL}?text=${encodeURIComponent(message)}`;
+
+const env = import.meta.env;
+
+export const EMAIL_JS_CONFIG = {
+  SERVICE_ID: env.VITE_EMAILJS_SERVICE_ID || 'service_m7ac0b9',
+  TEMPLATE_ID: env.VITE_EMAILJS_TEMPLATE_ID || 'template_sjdv2fb',
+  PUBLIC_KEY: env.VITE_EMAILJS_PUBLIC_KEY || 'wGh-QmzuTd8xhcG2Z',
+  DESTINATION_EMAIL:
+    env.VITE_CONTACT_DESTINATION_EMAIL || 'thiagopassos.dev@gmail.com',
+};
+
+/** Menu principal como na versão online (âncoras via HashRouter). */
 export const NAVIGATION = [
   { name: 'Home', href: '/' },
   { name: 'Sobre', href: '/sobre' },
-  { name: 'Tráfego', href: '/trafego' },
-  { name: 'Inteligência', href: '/inteligencia' },
   { name: 'Serviços', href: '/servicos' },
   { name: 'Portfólio', href: '/portfolio' },
-  { name: 'Blog', href: '/blog' },
   { name: 'Contato', href: '/contato' },
 ];
 
-export const SERVICES = [
-  {
-    title: 'Desenvolvimento de Sites',
-    description: 'Landing pages de alta conversão e portais institucionais com design artesanal e performance extrema.',
-    icon: <Code2 className="w-8 h-8" />
-  },
-  {
-    title: 'Sistemas Web Sob Medida',
-    description: 'Arquitetura de sistemas complexos, ERPs e Dashboards personalizados para escalar sua operação.',
-    icon: <Code2 className="w-8 h-8" />
-  },
-  {
-    title: 'Tráfego Pago & Growth',
-    description: 'Estratégias orientadas a dados no Meta Ads e Google Ads para maximizar seu ROI e presença digital.',
-    icon: <TrendingUp className="w-8 h-8" />
-  },
-  {
-    title: 'Experiência do Usuário',
-    description: 'Interfaces intuitivas (UI/UX) que transformam visitantes em clientes através de psicologia de consumo.',
-    icon: <Zap className="w-8 h-8" />
-  }
-];
+export const FOOTER_EXTRA_LINKS = [{ name: 'Blog', href: '/blog' }];
 
 export const TRAFFIC_ICONS = [
   <Target className="w-6 h-6" />,
@@ -88,14 +84,8 @@ export const SOCIALS = [
   { 
     name: 'WhatsApp', 
     icon: <MessageCircle size={22} />, 
-    href: 'https://wa.me/+559293627266', 
+    href: WHATSAPP_URL, 
     color: '#25D366' 
   },
 ];
 
-export const EMAIL_JS_CONFIG = {
-  SERVICE_ID: 'service_m7ac0b9',
-  TEMPLATE_ID: 'template_sjdv2fb',
-  PUBLIC_KEY: 'wGh-QmzuTd8xhcG2Z',
-  DESTINATION_EMAIL: 'thiagopassos.dev@gmail.com'
-};
