@@ -259,6 +259,96 @@ const RadarHeatmap: React.FC = () => {
   );
 };
 
+/* -------------------- Mobile platform preview -------------------- */
+
+type PlatformPreview = typeof PLATFORM_PREVIEW;
+
+const PlatformMobilePreview: React.FC<{
+  P: PlatformPreview;
+  reduced: boolean;
+}> = ({ P, reduced }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 14 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="rounded-2xl border border-white/10 bg-[#0d0d0f] shadow-[0_24px_80px_rgba(0,0,0,0.7)] overflow-hidden"
+  >
+    <div className="flex items-center justify-between gap-3 border-b border-white/5 bg-[#0a0a0c] px-4 py-3.5">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#00D2FF] to-[#9D50BB] shadow-[0_0_16px_rgba(0,210,255,0.3)]">
+          <LayoutDashboard className="h-4 w-4 text-black" strokeWidth={2.2} />
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-bold text-white">{P.productName}</p>
+          <p className="truncate text-[10px] text-gray-500">
+            {P.clientLabel}: <span className="font-medium text-[#9DE9FF]">{P.clientName}</span>
+          </p>
+        </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-1.5">
+        <button
+          type="button"
+          className="relative rounded-lg border border-white/10 bg-white/5 p-2 text-gray-400"
+          aria-label="Notificações"
+        >
+          <Bell className="h-3.5 w-3.5" />
+          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[#00D2FF]" />
+        </button>
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#9D50BB] to-[#00D2FF] shadow-lg shadow-[#9D50BB]/25">
+          <Sparkles className="h-4 w-4 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <div className="bg-[#111116] p-4">
+      <h4 className="text-base font-bold text-white">Dashboard</h4>
+      <p className="mt-1 text-xs leading-relaxed text-gray-500">{P.moduleCaption}</p>
+
+      <div className="mb-3 mt-5 flex items-center gap-2">
+        <Sparkles className="h-3.5 w-3.5 text-[#00D2FF]" />
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Insights IA</p>
+      </div>
+      <div className="grid grid-cols-1 gap-2.5">
+        {P.insightsIA.slice(0, 4).map((card) => (
+          <div
+            key={card.label}
+            className={`rounded-xl border p-3.5 ${toneBorder[card.tone] ?? 'border-white/10 bg-white/[0.03]'}`}
+          >
+            <p className="text-[11px] leading-snug text-gray-500">{card.label}</p>
+            <p className="mt-1 font-mono text-2xl font-bold text-white">{card.value}</p>
+            <p className="mt-1 text-[10px] leading-snug text-gray-600">{card.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 grid grid-cols-2 gap-2.5">
+        {P.kpis.slice(0, 2).map((k) => (
+          <div key={k.label} className="rounded-xl border border-white/10 bg-[#16161d] p-3.5">
+            <p className="text-[10px] tracking-wide text-gray-500">{k.label}</p>
+            <p className="mt-1 font-mono text-lg font-bold text-white">{k.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <ChartFrame title="Performance semanal" className="mt-5">
+        <div className="flex h-28">
+          <YAxisLabels labels={P.axis.y} />
+          <div className="flex flex-1 flex-col">
+            <div className="flex-1">
+              <LineAreaChart reducedMotion={reduced} />
+            </div>
+            <XAxisLabels labels={P.axis.x} />
+          </div>
+        </div>
+      </ChartFrame>
+
+      <p className="mt-4 text-center text-[9px] text-gray-600">
+        Interface ilustrativa do Ecossistema TechT. Métricas exemplificam o produto, não garantia de resultado.
+      </p>
+    </div>
+  </motion.div>
+);
+
 /* -------------------- Section -------------------- */
 
 const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
@@ -275,7 +365,7 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
 
   const shell =
     'relative overflow-hidden bg-[#0a0a0c]' +
-    (embedded ? ' py-16 md:py-20 border-t border-white/5' : ' py-24');
+    (embedded ? ' py-12 md:py-20 border-t border-white/5' : ' py-16 md:py-24');
 
   return (
     <section id="inteligencia" className={shell}>
@@ -287,7 +377,7 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
       />
 
       <Container className="relative">
-        <div className="text-center mb-12 md:mb-16">
+        <div className="mb-8 text-center md:mb-16">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -301,7 +391,7 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
             startOnInView
             startDelayMs={headingDelay * 1000}
             charIntervalMs={headingInterval}
-            className="text-4xl md:text-6xl font-bold mb-6 text-white"
+            className="mb-5 text-3xl font-bold text-white sm:text-4xl md:mb-6 md:text-6xl"
             segments={[
               { text: intelligence.title },
               { text: intelligence.titleHighlight, className: GRADIENTS.text },
@@ -312,18 +402,23 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: titleDoneDelay + 0.12 }}
-            className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed"
+            className="mx-auto max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg"
           >
             {intelligence.description}
           </motion.p>
         </div>
 
-        {/* Mock Ecossistema TechT — estilo SaaS dark */}
+        {/* Mobile — preview enxuto (sem sidebar empilhada) */}
+        <div className="md:hidden">
+          <PlatformMobilePreview P={P} reduced={reduced} />
+        </div>
+
+        {/* Tablet+ — mock completo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.99 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="rounded-[1.75rem] border border-white/10 bg-[#0d0d0f] shadow-[0_40px_120px_rgba(0,0,0,0.75)] overflow-hidden flex flex-col md:flex-row min-h-[620px] md:min-h-[700px]"
+          className="hidden md:flex rounded-[1.75rem] border border-white/10 bg-[#0d0d0f] shadow-[0_40px_120px_rgba(0,0,0,0.75)] overflow-hidden flex-col md:flex-row min-h-[700px]"
         >
           {/* Sidebar */}
           <aside className="w-full md:w-60 shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-[#0a0a0c] p-4 flex flex-col">

@@ -358,14 +358,14 @@ const EcosystemHub: React.FC<EcosystemHubProps> = ({ data }) => {
   );
 
   return (
-    <div className="relative z-10 mt-20 md:mt-28">
+    <div className="relative z-10 mt-8 md:mt-14 lg:mt-28">
       <div className="lg:grid lg:grid-cols-[minmax(0,22rem)_1fr] xl:grid-cols-[minmax(0,24rem)_1fr] gap-10 xl:gap-14 items-start">
         <motion.header
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '100px 0px 100px 0px' }}
           transition={{ duration: 0.55, ease: easeOut }}
-          className="relative lg:sticky lg:top-28"
+          className="relative hidden lg:block lg:sticky lg:top-28"
         >
           <div className="inline-flex items-center gap-3 mb-7">
             <span className="w-8 h-px bg-gradient-to-r from-transparent to-[#9D50BB]/80" />
@@ -378,14 +378,14 @@ const EcosystemHub: React.FC<EcosystemHubProps> = ({ data }) => {
             startOnInView
             startDelayMs={reducedMotion ? 0 : 280}
             charIntervalMs={reducedMotion ? 0 : 65}
-            className="text-3xl md:text-4xl lg:text-[2.65rem] xl:text-[2.85rem] font-bold text-white leading-[1.08] tracking-[-0.02em] mb-6"
+            className="text-[1.65rem] sm:text-3xl md:text-4xl lg:text-[2.65rem] xl:text-[2.85rem] font-bold text-white leading-[1.12] tracking-[-0.02em] mb-5 md:mb-6"
             segments={[
               { text: data.title },
               { text: data.titleHighlight, className: GRADIENTS.text },
               { text: data.titleSuffix },
             ]}
           />
-          <p className="text-gray-400 text-lg md:text-xl leading-[1.6] max-w-md">
+          <p className="text-gray-400 text-[0.95rem] sm:text-lg md:text-xl leading-[1.65] max-w-md">
             {data.intro}
           </p>
           <div className="hidden lg:block mt-14 xl:mt-16">
@@ -425,22 +425,41 @@ const EcosystemHub: React.FC<EcosystemHubProps> = ({ data }) => {
             </div>
           </div>
 
-          {/* Mobile / tablet fallback */}
-          <div className="lg:hidden space-y-6">
-            <div className="flex flex-col items-center text-center px-4 py-8 rounded-3xl border border-white/[0.08] bg-[#0a0a0f]/80">
-              <HubCore hub={data.hub} reducedMotion={!!reducedMotion} compact />
+          {/* Mobile / tablet — layout dedicado */}
+          <div className="lg:hidden mt-6 md:mt-8 space-y-5">
+            <div className="relative overflow-hidden rounded-[28px] border border-white/[0.1] bg-gradient-to-b from-[#0d1118]/95 via-[#09090f] to-[#060608] px-5 pt-8 pb-7 sm:px-7 sm:pt-10 sm:pb-9">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_38%,rgba(0,210,255,0.14),transparent_55%),radial-gradient(ellipse_at_80%_90%,rgba(157,80,187,0.08),transparent_45%)]"
+              />
+              <div className="relative flex flex-col items-center text-center">
+                <HubCore hub={data.hub} reducedMotion={!!reducedMotion} mobileHero />
+                <p className="mt-6 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[#9DE9FF]">
+                  Núcleo {data.hub.label} TechT
+                </p>
+                <p className="mt-2.5 text-sm text-gray-400 leading-relaxed max-w-[18rem]">
+                  {data.hub.description}
+                </p>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {data.nodes.map((node, idx) => (
-                <OrbitalNode
-                  key={node.id}
-                  node={node}
-                  index={idx}
-                  reducedMotion={!!reducedMotion}
-                  stacked
-                />
-              ))}
+
+            <div className="space-y-3">
+              <p className="px-1 text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-gray-500">
+                Módulos do ecossistema
+              </p>
+              <div className="flex flex-col gap-3">
+                {data.nodes.map((node, idx) => (
+                  <OrbitalNode
+                    key={node.id}
+                    node={node}
+                    index={idx}
+                    reducedMotion={!!reducedMotion}
+                    stacked
+                  />
+                ))}
+              </div>
             </div>
+
             <Legend items={data.legend} stacked />
           </div>
         </div>
@@ -473,10 +492,15 @@ type HubCoreProps = {
   hub: EcosystemIncludedData['hub'];
   reducedMotion: boolean;
   compact?: boolean;
+  mobileHero?: boolean;
 };
 
-const HubCore: React.FC<HubCoreProps> = ({ hub, reducedMotion, compact }) => {
-  const size = compact ? 'w-[148px] h-[148px]' : 'w-[172px] h-[172px] xl:w-[188px] xl:h-[188px]';
+const HubCore: React.FC<HubCoreProps> = ({ hub, reducedMotion, compact, mobileHero }) => {
+  const size = mobileHero
+    ? 'w-[196px] h-[196px] sm:w-[212px] sm:h-[212px]'
+    : compact
+      ? 'w-[148px] h-[148px]'
+      : 'w-[172px] h-[172px] xl:w-[188px] xl:h-[188px]';
 
   return (
     <motion.div
@@ -564,7 +588,7 @@ const OrbitalNode: React.FC<OrbitalNodeProps> = ({
       };
 
   const cardClassName = stacked
-    ? 'group relative flex gap-3 p-4 rounded-2xl border border-white/[0.1] bg-[#0a0a0f]/90 hover:border-[#3B82F6]/25 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)] transition-[box-shadow,border-color] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
+    ? 'group relative w-full flex gap-3.5 p-4 sm:p-[1.1rem] rounded-2xl border border-white/[0.1] bg-[#0a0a0f]/92 hover:border-[#3B82F6]/25 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)] transition-[box-shadow,border-color] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
     : `group relative w-[10.9rem] xl:w-[11.8rem] p-3.5 rounded-2xl border border-white/[0.1] bg-[#0a0a0f]/92 backdrop-blur-sm transition-[box-shadow,border-color,background-color] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-[#3B82F6]/30 hover:bg-[#0b0b12]/95 hover:shadow-[0_0_28px_rgba(59,130,246,0.14),0_10px_36px_rgba(0,0,0,0.38)] ${
         alignCenter ? 'text-center' : alignRight ? 'text-right' : 'text-left'
       }`;
@@ -585,11 +609,11 @@ const OrbitalNode: React.FC<OrbitalNodeProps> = ({
         <Icon className="w-[14px] h-[14px]" strokeWidth={1.65} />
       </span>
       <div className={alignCenter && !stacked ? 'flex flex-col items-center' : ''}>
-        <h4 className="text-[0.8rem] xl:text-[0.84rem] font-semibold text-white tracking-[-0.01em] leading-tight">
+        <h4 className="text-[0.88rem] sm:text-[0.92rem] xl:text-[0.84rem] font-semibold text-white tracking-[-0.01em] leading-tight">
           {node.title}
         </h4>
         <p
-          className={`mt-1 text-[0.72rem] xl:text-[0.75rem] text-gray-400 leading-snug transition-all duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`mt-1 text-[0.8rem] sm:text-[0.82rem] xl:text-[0.75rem] text-gray-400 leading-relaxed transition-all duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             stacked
               ? 'group-hover:text-gray-300'
               : 'max-h-[3.2rem] overflow-hidden group-hover:max-h-[6.4rem] group-hover:text-gray-300'
@@ -986,7 +1010,7 @@ const Legend: React.FC<LegendProps> = ({ items, stacked }) => (
   <div
     className={
       stacked
-        ? 'grid grid-cols-2 gap-2'
+        ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full'
         : 'z-20 grid grid-cols-1 gap-3 w-full max-w-[19rem] p-4 xl:p-5 rounded-2xl border border-white/[0.1] bg-[#06060c]/85 backdrop-blur-sm shadow-[0_12px_40px_rgba(0,0,0,0.28)]'
     }
   >
