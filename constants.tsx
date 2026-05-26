@@ -52,7 +52,6 @@ export const EMAIL_JS_CONFIG = {
 /** Menu principal como na versão online (âncoras via HashRouter). */
 export const NAVIGATION = [
   { name: 'Home', href: '/' },
-  { name: 'Sobre', href: '/sobre' },
   { name: 'Serviços', href: '/servicos' },
   { name: 'Portfólio', href: '/portfolio' },
   { name: 'Contato', href: '/contato' },
@@ -78,7 +77,7 @@ export const SOCIALS = [
   { 
     name: 'Instagram', 
     icon: <Instagram size={22} />, 
-    href: 'https://www.instagram.com/techt.dev?igsh=bGszZ3Nmendwdndn&utm_source=qr', 
+    href: 'https://www.instagram.com/techt.br/', 
     color: '#E1306C' 
   },
   { 

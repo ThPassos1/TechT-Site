@@ -8,10 +8,17 @@ import TypewriterHeadline from '../effects/TypewriterHeadline';
 import {
   Bell,
   ChevronDown,
+  ChevronRight,
   Sparkles,
   LayoutDashboard,
-  Star,
   LogOut,
+  Sun,
+  Users,
+  Megaphone,
+  Workflow,
+  Shield,
+  UserCircle,
+  type LucideIcon,
 } from 'lucide-react';
 
 const toneBorder: Record<string, string> = {
@@ -22,17 +29,245 @@ const toneBorder: Record<string, string> = {
   violet: 'border-violet-500/25 bg-violet-500/5',
 };
 
+const sidebarIcon: Record<string, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  crm: Users,
+  ads: Megaphone,
+  ai: Sparkles,
+  ops: Workflow,
+  admin: Shield,
+  portal: UserCircle,
+};
+
 export type IntelligenceProps = {
   /** Dentro de Serviços: mesma faixa visual, entre os cards e os CTAs */
   embedded?: boolean;
 };
 
+/* -------------------- Chart sub-components -------------------- */
+
+const ChartFrame: React.FC<{
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}> = ({ title, children, className = '' }) => (
+  <div className={`rounded-2xl border border-white/10 bg-[#0f0f14] p-4 md:p-5 ${className}`}>
+    <p className="text-[10.5px] text-gray-500 mb-3 tracking-wide">{title}</p>
+    {children}
+  </div>
+);
+
+const YAxisLabels: React.FC<{ labels: readonly string[] }> = ({ labels }) => (
+  <div className="flex flex-col justify-between text-[9px] text-gray-600 font-mono pr-2 py-1 shrink-0">
+    {labels.map((l) => (
+      <span key={l} className="leading-none">
+        {l}
+      </span>
+    ))}
+  </div>
+);
+
+const XAxisLabels: React.FC<{ labels: readonly string[] }> = ({ labels }) => (
+  <div className="flex justify-between text-[9px] text-gray-600 font-mono pt-1">
+    {labels.map((l) => (
+      <span key={l} className="leading-none">
+        {l}
+      </span>
+    ))}
+  </div>
+);
+
+const Gridlines: React.FC = () => (
+  <>
+    {[10, 30, 50, 70, 90].map((y) => (
+      <line
+        key={y}
+        x1="0"
+        y1={y}
+        x2="100"
+        y2={y}
+        stroke="rgba(255,255,255,0.05)"
+        strokeWidth="0.3"
+        strokeDasharray="0.6 1.2"
+      />
+    ))}
+  </>
+);
+
+const LineAreaChart: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
+  // gentle climbing line: 220 max scale → svg coords 0..100
+  // values: 18, 22, 28, 34, 40 (rising)
+  const pts = [
+    { x: 8, y: 78 },
+    { x: 30, y: 72 },
+    { x: 52, y: 64 },
+    { x: 74, y: 56 },
+    { x: 96, y: 48 },
+  ];
+  const lineD = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
+  const areaD = `${lineD} L96,90 L8,90 Z`;
+  const totalLength = 240;
+
+  return (
+    <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="lineAreaFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#9D50BB" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#9D50BB" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <Gridlines />
+      <motion.path
+        d={areaD}
+        fill="url(#lineAreaFill)"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, delay: 0.5 }}
+      />
+      <motion.path
+        d={lineD}
+        stroke="#A78BFA"
+        strokeWidth="1.2"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray={totalLength}
+        initial={{ strokeDashoffset: reducedMotion ? 0 : totalLength }}
+        whileInView={{ strokeDashoffset: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.4, ease: 'easeOut' }}
+      />
+      {pts.map((p, i) => (
+        <motion.circle
+          key={i}
+          cx={p.x}
+          cy={p.y}
+          r="0.9"
+          fill="#A78BFA"
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 1 + i * 0.08 }}
+        />
+      ))}
+    </svg>
+  );
+};
+
+const BarsChart: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
+  // heights as % of svg height (90 visible)
+  const heights = [50, 60, 72, 80, 88];
+  return (
+    <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#A78BFA" />
+          <stop offset="100%" stopColor="#6D28D9" />
+        </linearGradient>
+      </defs>
+      <Gridlines />
+      {heights.map((h, i) => {
+        const w = 12;
+        const gap = (100 - w * heights.length) / (heights.length + 1);
+        const x = gap + i * (w + gap);
+        const y = 90 - h;
+        return (
+          <motion.rect
+            key={i}
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            rx={1.2}
+            fill="url(#barFill)"
+            initial={{ scaleY: reducedMotion ? 1 : 0, transformOrigin: '50% 90%' }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 + i * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
+            style={{ transformOrigin: `${x + w / 2}px 90px` }}
+          />
+        );
+      })}
+    </svg>
+  );
+};
+
+const PieFunnel: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
+  const segs = [
+    { points: '10,18 90,18 78,34 22,34', opacity: 0.85 },
+    { points: '22,34 78,34 66,50 34,50', opacity: 0.65 },
+    { points: '34,50 66,50 56,66 44,66', opacity: 0.45 },
+    { points: '44,66 56,66 52,82 48,82', opacity: 0.3 },
+  ];
+  return (
+    <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="funnelFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#A78BFA" />
+          <stop offset="100%" stopColor="#22D3EE" />
+        </linearGradient>
+      </defs>
+      {segs.map((s, i) => (
+        <motion.polygon
+          key={i}
+          points={s.points}
+          fill="url(#funnelFill)"
+          opacity={s.opacity}
+          initial={{ opacity: reducedMotion ? s.opacity : 0, y: -4 }}
+          whileInView={{ opacity: s.opacity, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 + i * 0.12, ease: 'easeOut' }}
+        />
+      ))}
+      {[18, 34, 50, 66, 82].map((y) => (
+        <line
+          key={y}
+          x1="6"
+          y1={y}
+          x2="94"
+          y2={y}
+          stroke="rgba(255,255,255,0.07)"
+          strokeWidth="0.25"
+          strokeDasharray="0.6 1.2"
+        />
+      ))}
+    </svg>
+  );
+};
+
+const RadarHeatmap: React.FC = () => {
+  const palette = [
+    '#22D3EE', '#34D399', '#FACC15', '#F472B6',
+    '#A78BFA', '#60A5FA', '#FBBF24', '#F87171',
+    '#5EEAD4', '#C084FC', '#22D3EE', '#34D399',
+  ];
+  return (
+    <div className="grid grid-cols-6 grid-rows-2 gap-1.5 h-full">
+      {palette.map((c, i) => (
+        <motion.span
+          key={i}
+          className="rounded-md"
+          style={{ background: c }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 0.78, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.35, delay: 0.2 + i * 0.04, ease: 'easeOut' }}
+        />
+      ))}
+    </div>
+  );
+};
+
+/* -------------------- Section -------------------- */
+
 const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
   const { intelligence } = useSiteConfig();
   const P = PLATFORM_PREVIEW;
   const reducedMotion = useReducedMotion();
+  const reduced = !!reducedMotion;
   const headingDelay = reducedMotion ? 0 : 0.4;
-  const headingInterval = reducedMotion ? 0 : 105;
+  const headingInterval = reducedMotion ? 0 : 70;
   const headingTextLength = `${intelligence.title}${intelligence.titleHighlight}${intelligence.titleSuffix}`.length;
   const titleDoneDelay = reducedMotion
     ? 0
@@ -88,79 +323,88 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
           initial={{ opacity: 0, scale: 0.99 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="rounded-[1.75rem] border border-white/10 bg-[#0d0d0f] shadow-[0_40px_120px_rgba(0,0,0,0.75)] overflow-hidden flex flex-col md:flex-row min-h-[560px] md:min-h-[620px]"
+          className="rounded-[1.75rem] border border-white/10 bg-[#0d0d0f] shadow-[0_40px_120px_rgba(0,0,0,0.75)] overflow-hidden flex flex-col md:flex-row min-h-[620px] md:min-h-[700px]"
         >
           {/* Sidebar */}
-          <aside className="w-full md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-[#0a0a0c] p-4 flex flex-col max-h-[220px] md:max-h-none overflow-y-auto md:overflow-visible">
-            <div className="flex items-center justify-between mb-6 md:mb-8">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D2FF] to-[#9D50BB] flex items-center justify-center">
-                  <LayoutDashboard className="w-4 h-4 text-black" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-white leading-tight">{P.productName}</p>
-                  <p className="text-[8px] text-gray-600 uppercase tracking-wider">SaaS</p>
-                </div>
+          <aside className="w-full md:w-60 shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-[#0a0a0c] p-4 flex flex-col">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D2FF] to-[#9D50BB] flex items-center justify-center shadow-[0_0_18px_rgba(0,210,255,0.35)]">
+                <LayoutDashboard className="w-4 h-4 text-black" strokeWidth={2.2} />
               </div>
+              <p className="text-[12px] font-semibold text-white leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-[#9DE9FF]">
+                {P.productName}
+              </p>
             </div>
 
-            <nav className="space-y-6 flex-1 text-[10px] font-bold tracking-widest">
-              {P.sidebar.map((section) => (
-                <div key={section.group}>
-                  <p className="text-gray-600 mb-2 px-2">{section.group}</p>
-                  <ul className="space-y-0.5">
-                    {section.items.map((item) => (
-                      <li key={item.label}>
-                        <span
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-default ${
-                            item.active
-                              ? 'bg-gradient-to-r from-[#9D50BB]/40 to-[#00D2FF]/20 text-white'
-                              : 'text-gray-500 hover:text-gray-300'
-                          }`}
-                        >
-                          {item.star ? <Star className="w-3 h-3 text-amber-400 shrink-0" /> : null}
-                          <span className="truncate">{item.label}</span>
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+            <nav className="flex-1 flex flex-col gap-1 text-[11px] font-semibold tracking-wide">
+              {P.sidebar.map((item) => {
+                const Icon = sidebarIcon[item.icon] ?? LayoutDashboard;
+                const isActive = 'active' in item && item.active;
+                return (
+                  <span
+                    key={item.label}
+                    className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-default transition-colors ${
+                      isActive
+                        ? 'bg-gradient-to-r from-[#9D50BB]/55 via-[#7C3AED]/35 to-[#00D2FF]/20 text-white border border-white/10 shadow-[inset_0_0_18px_rgba(157,80,187,0.15)]'
+                        : 'text-gray-400 hover:text-white hover:bg-white/[0.03]'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5 shrink-0" strokeWidth={1.8} />
+                    <span className="truncate flex-1">{item.label}</span>
+                    {!isActive && <ChevronRight className="w-3 h-3 opacity-40 shrink-0" />}
+                  </span>
+                );
+              })}
             </nav>
 
-            <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between text-[9px] text-gray-600">
-              <span className="truncate">Admin TechT</span>
-              <LogOut className="w-3.5 h-3.5 opacity-50" />
+            <div className="mt-4 pt-3 border-t border-white/5">
+              <p className="text-[10px] text-gray-500 mb-2 leading-snug">{P.adminLabel}</p>
+              <div className="flex items-center gap-2 text-[10px] text-gray-600">
+                <LogOut className="w-3 h-3" />
+                <span>Sair</span>
+              </div>
             </div>
           </aside>
 
           {/* Main */}
           <div className="flex-1 flex flex-col min-w-0 bg-[#111116]">
-            <header className="h-14 md:h-16 border-b border-white/5 px-4 md:px-6 flex items-center justify-between gap-2">
-              <div className="min-w-0">
-                <h3 className="text-sm font-bold text-white truncate">{P.productName}</h3>
-                <p className="text-[9px] text-gray-600 truncate">{P.subtitle}</p>
+            <header className="border-b border-white/5 px-4 md:px-6 py-3 md:py-4 flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm md:text-base font-bold text-white truncate">{P.productName}</h3>
+                <p className="text-[10px] md:text-[11px] text-gray-500 truncate mt-0.5">{P.subtitle}</p>
+                <p className="text-[10px] md:text-[11px] text-gray-500 truncate">
+                  {P.clientLabel}:{' '}
+                  <span className="text-[#9DE9FF] font-medium">{P.clientName}</span>
+                </p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <button type="button" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400">
-                  <Bell className="w-4 h-4" />
+                <button type="button" className="relative p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400">
+                  <Bell className="w-3.5 h-3.5" />
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#00D2FF] shadow-[0_0_6px_rgba(0,210,255,0.9)]" />
                 </button>
                 <button
                   type="button"
-                  className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] text-gray-400"
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] text-gray-300"
                 >
-                  {P.clientContext}
+                  {P.clientName}
                   <ChevronDown className="w-3 h-3" />
                 </button>
-                <span className="text-[9px] px-2 py-1 rounded bg-white/5 text-gray-500">PT</span>
+                <span className="text-[10px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-gray-400 font-medium">
+                  PT
+                </span>
+                <button type="button" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400">
+                  <Sun className="w-3.5 h-3.5" />
+                </button>
               </div>
             </header>
 
-            <div className="p-4 md:p-6 overflow-y-auto max-h-[70vh] md:max-h-none">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div className="p-4 md:p-6 flex-1 overflow-y-auto max-h-[70vh] md:max-h-none">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
                 <div>
-                  <h4 className="text-lg font-bold text-white">Dashboard</h4>
-                  <p className="text-[11px] text-gray-500 mt-1">{P.moduleCaption}</p>
+                  <h4 className="text-lg md:text-xl font-bold text-white">Dashboard</h4>
+                  <p className="text-[11px] text-gray-500 mt-1 max-w-xl leading-relaxed">
+                    {P.moduleCaption}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2 self-end sm:self-auto">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#9D50BB] to-[#00D2FF] flex items-center justify-center shadow-lg shadow-[#9D50BB]/30">
@@ -169,54 +413,84 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
                 </div>
               </div>
 
-              <p className="text-[10px] text-gray-600 mb-4 uppercase tracking-widest">Insights IA</p>
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-3 mb-8">
+              {/* Insights IA */}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="inline-flex w-4 h-4 items-center justify-center rounded-full bg-[#00D2FF]/15 border border-[#00D2FF]/30">
+                  <Sparkles className="w-2.5 h-2.5 text-[#00D2FF]" />
+                </span>
+                <p className="text-[10.5px] text-gray-400 uppercase tracking-widest font-semibold">
+                  Insights IA
+                </p>
+              </div>
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-2.5 mb-6">
                 {P.insightsIA.map((card) => (
                   <div
                     key={card.label}
                     className={`rounded-xl border p-3 ${toneBorder[card.tone] ?? 'border-white/10 bg-white/[0.03]'}`}
                   >
-                    <p className="text-[9px] text-gray-500 uppercase tracking-tighter mb-1 leading-tight">{card.label}</p>
+                    <p className="text-[9.5px] text-gray-500 mb-1 leading-tight">{card.label}</p>
                     <p className="text-lg font-bold text-white font-mono">{card.value}</p>
                     <p className="text-[9px] text-gray-600 mt-1 leading-snug">{card.sub}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+              {/* KPIs */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-3 mb-6">
                 {P.kpis.map((k) => (
-                  <div key={k.label} className="rounded-xl border border-white/10 bg-[#16161d] p-4">
-                    <p className="text-[9px] text-gray-600 uppercase tracking-widest mb-2">{k.label}</p>
-                    <p className="text-xl font-bold text-white font-mono">{k.value}</p>
-                    <p className={`text-[9px] mt-1 ${k.trendUp ? 'text-emerald-500/90' : 'text-gray-600'}`}>
-                      {k.trend}
-                    </p>
+                  <div
+                    key={k.label}
+                    className="rounded-xl border border-white/10 bg-[#16161d] p-3.5 md:p-4"
+                  >
+                    <p className="text-[10px] text-gray-500 mb-1.5 tracking-wide">{k.label}</p>
+                    <p className="text-lg md:text-xl font-bold text-white font-mono">{k.value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-white/10 bg-[#0f0f14] p-5 h-44 flex flex-col justify-end">
-                  <p className="text-[10px] text-gray-600 mb-2">Tendência (ilustrativo)</p>
-                  <div className="flex items-end justify-between gap-1 h-24">
-                    {[35, 42, 48, 55, 62, 70, 78].map((h, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 rounded-t bg-gradient-to-t from-[#9D50BB]/40 to-[#00D2FF]/60 opacity-90"
-                        style={{ height: `${h}%` }}
-                      />
-                    ))}
+              {/* Charts 2x2 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <ChartFrame title="Line + Area animado">
+                  <div className="flex h-32">
+                    <YAxisLabels labels={P.axis.y} />
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex-1">
+                        <LineAreaChart reducedMotion={reduced} />
+                      </div>
+                      <XAxisLabels labels={P.axis.x} />
+                    </div>
                   </div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-[#0f0f14] p-5 h-44 flex items-center justify-center">
-                  <p className="text-[11px] text-gray-600 text-center px-4">
-                    Funil, radar e heatmaps podem plugar nos mesmos dados — roadmap da plataforma.
-                  </p>
-                </div>
+                </ChartFrame>
+
+                <ChartFrame title="Barras crescendo">
+                  <div className="flex h-32">
+                    <YAxisLabels labels={P.axis.y} />
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex-1">
+                        <BarsChart reducedMotion={reduced} />
+                      </div>
+                      <XAxisLabels labels={P.axis.x} />
+                    </div>
+                  </div>
+                </ChartFrame>
+
+                <ChartFrame title="Pie + Funnel">
+                  <div className="h-32 flex items-center justify-center">
+                    <div className="w-full h-full max-w-[200px]">
+                      <PieFunnel reducedMotion={reduced} />
+                    </div>
+                  </div>
+                </ChartFrame>
+
+                <ChartFrame title="Radar + Heatmap D3">
+                  <div className="h-32">
+                    <RadarHeatmap />
+                  </div>
+                </ChartFrame>
               </div>
 
               <p className="text-[9px] text-gray-600 text-center mt-6">
-                Interface ilustrativa para comunicar o produto. Métricas são exemplo visual, não garantia de resultado.
+                Interface ilustrativa do Ecossistema TechT. Métricas exemplificam o produto, não garantia de resultado.
               </p>
             </div>
           </div>

@@ -121,3 +121,112 @@ video {
   color: #9fdfff;
   animation: hero-cursor-blink 0.9s steps(1, end) infinite;
 }
+
+/* ============================================================
+   GLOW BORDER — borda animada rotacional (estilo "moving beam")
+   ============================================================
+   Técnica:
+   - @property --glow-angle anima um angle CSS de 0deg → 360deg
+   - background usa conic-gradient(from var(--glow-angle), ...)
+   - mask com xor/exclude deixa visível apenas a "moldura" (anel)
+     do pseudo-elemento, criando uma borda fina luminosa.
+   - O cometa de luz percorre o perímetro continuamente.
+   --glow-color  : cor principal do feixe (default cyan da marca)
+   --glow-accent : cor do brilho central do feixe (default branco)
+   --glow-thickness : espessura da borda (default 1.5px)
+   --glow-duration  : duração de uma volta (default 4s)
+   --glow-opacity   : multiplicador global de intensidade (default 1)
+*/
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes glow-rotate {
+  to { --glow-angle: 360deg; }
+}
+
+.glow-border {
+  --glow-color: rgba(0, 210, 255, 0.85);
+  --glow-accent: rgba(255, 255, 255, 0.98);
+  --glow-thickness: 1.5px;
+  --glow-duration: 4s;
+  --glow-opacity: 1;
+  position: relative;
+  isolation: isolate;
+}
+
+.glow-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: var(--glow-thickness);
+  border-radius: inherit;
+  background:
+    conic-gradient(
+      from var(--glow-angle),
+      transparent 0deg,
+      transparent 70deg,
+      var(--glow-color) 110deg,
+      var(--glow-accent) 130deg,
+      var(--glow-color) 150deg,
+      transparent 190deg,
+      transparent 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: glow-rotate var(--glow-duration) linear infinite;
+  opacity: var(--glow-opacity);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Halo sutil — fica atrás do elemento e acompanha o feixe */
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  padding: 3px;
+  border-radius: inherit;
+  background:
+    conic-gradient(
+      from var(--glow-angle),
+      transparent 0deg,
+      transparent 80deg,
+      var(--glow-color) 125deg,
+      transparent 170deg,
+      transparent 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: blur(6px);
+  opacity: calc(var(--glow-opacity) * 0.7);
+  animation: glow-rotate var(--glow-duration) linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Variante "soft": invisível em repouso, aparece no hover. Útil para
+   cards onde a animação contínua poderia poluir visualmente. */
+.glow-border-hover {
+  --glow-opacity: 0;
+  transition: --glow-opacity 0.45s ease;
+}
+.glow-border-hover:hover,
+.group:hover .glow-border-hover {
+  --glow-opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-border::before,
+  .glow-border::after {
+    animation: none;
+  }
+}

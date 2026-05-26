@@ -22,7 +22,7 @@ const SITE_CONFIG_PT = {
   brand: {
     name: "TECHT",
     highlight: "",
-    tagline: "Evolução Digital",
+    tagline: "Tecnologia que gera resultados",
     logoGlow: "#00D2FF",
     logoImage: logoImage,
   },
@@ -33,7 +33,7 @@ const SITE_CONFIG_PT = {
     titleHighlight: "venda",
     titlePart2: ", num só ecossistema.",
     description:
-      "Você contrata uma operação completa de marketing para adquirir clientes com consistência. Da mídia ao fechamento, cada etapa reduz desperdício e aumenta previsibilidade. A IA apoia validações e análises; estratégia e execução seguem com método humano, no Ecossistema TechT.",
+      "Você contrata uma operação completa de marketing para gerar clientes com consistência. Da mídia ao fechamento, cada etapa elimina desperdício e aumenta previsibilidade. A IA apoia validações e análises. Estratégia e execução seguem com método humano, no Ecossistema TechT.",
     ctaButton: "Quero estruturar minha operação de marketing",
     ctaSecondary: "Ver a plataforma",
     primaryWaMessage:
@@ -48,31 +48,73 @@ const SITE_CONFIG_PT = {
     titleHighlight: "central de operação",
     titleSuffix: " da agência",
     description:
-      "SaaS multi-cliente para organizar a operação da agência: CRM, tráfego, portal do cliente, agenda, automações, financeiro e analytics. A camada de IA apoia validações, priorização e leitura de cenário (sem substituir decisão). WhatsApp integrado, fluxos (ex.: n8n), login seguro e área admin. Interface moderna; backend e banco profissionais por trás.",
+      "Sistema multi-cliente para organizar a operação da agência: CRM, tráfego, portal do cliente, agenda, automações, financeiro e analytics. A camada de IA apoia validações, priorização e leitura de cenário (sem substituir decisão). WhatsApp integrado, fluxos (ex.: n8n), login seguro e área admin. Interface moderna; backend e banco profissionais por trás.",
   },
 
   about: {
-    badge: "Sobre nós",
-    title: "Arquitetando o ",
-    titleHighlight: "Futuro",
-    titleSuffix: " através do Código.",
+    badge: "Ecossistema TechT",
+    title: "Tecnologia, mídia e operação ",
+    titleHighlight: "conectadas para gerar crescimento",
+    titleSuffix: ".",
     image: aboutImage,
     description:
-      "A TechT é liderada por Thiago Passos e une marketing de performance, conteúdo e engenharia de software num pacote pensado para empresas que levam aquisição a sério. A IA está presente no processo e nos sistemas para apoiar análises e prioridades — o protagonista continua sendo uma operação de marketing bem executada, etapa por etapa.",
-    founderName: "Thiago Passos",
+      "A TechT é um ecossistema que conecta tecnologia, mídia, conteúdo, CRM, automações, IA e operação comercial em um único sistema de crescimento. Cada parte se comunica para reduzir desperdício, aumentar previsibilidade e trazer clareza estratégica em cada decisão.",
+    founderName: "TechT",
     stats: {
       label: "Projetos entregues",
       year: "2026",
       count: "+50",
     },
     purpose: {
-      title: "Inovação",
-      text: "Estratégia e execução com stack atual: performance, UX e ferramentas que dão clareza para decidir melhor na aquisição.",
+      title: "Operação conectada",
+      text: "Mídia, CRM, conteúdo, automações e dados operando como um único sistema — sem ilhas, sem retrabalho.",
     },
     expertise: {
-      title: "Suporte",
-      text: "Perto do seu time depois do go-live: campanhas, automações e plataforma evoluindo junto com o negócio.",
+      title: "Inteligência aplicada",
+      text: "IA presente em análises, validações e recomendações para acelerar decisões com base em sinais reais.",
     },
+    manifestoEyebrow: "Visão",
+    manifestoLead:
+      "A TechT é uma empresa de tecnologia aplicada ao crescimento. Operamos como um ecossistema conectado — mídia, CRM, IA, automações, dashboards e WhatsApp orquestrados em um único sistema, em que cada camada conversa com a próxima para reduzir desperdício, aumentar previsibilidade e trazer contexto a cada decisão.",
+    manifestoTail:
+      "A IA acelera análises, validações e recomendações. O direcionamento estratégico continua humano, orientado pelo contexto real de cada cliente — execução premium, etapa por etapa.",
+    valueCards: [
+      {
+        id: "operation",
+        title: "Operação conectada",
+        text: "Mídia, CRM, conteúdo, automações e dados operando como um único sistema — sem ilhas e sem retrabalho.",
+      },
+      {
+        id: "intelligence",
+        title: "Inteligência aplicada",
+        text: "IA presente em análises, validações e priorização para acelerar decisões com base em sinais reais.",
+      },
+      {
+        id: "growth",
+        title: "Crescimento estruturado",
+        text: "Cada etapa medida, ajustada e otimizada para que sua receita cresça com previsibilidade — não por acaso.",
+      },
+      {
+        id: "ecosystem",
+        title: "Plataforma proprietária",
+        text: "Uma camada própria que organiza execução, números e contexto em uma única visão da operação.",
+      },
+    ],
+    metrics: [
+      { id: "projects", value: 50, suffix: "+", label: "Projetos entregues" },
+      { id: "ops", value: 12, suffix: "+", label: "Operações ativas" },
+      { id: "camps", value: 80, suffix: "+", label: "Campanhas gerenciadas" },
+      { id: "flows", value: 1200, suffix: "+", label: "Fluxos automatizados" },
+    ],
+    ecosystemHub: "TECHT",
+    ecosystemNodes: [
+      { id: "midia", label: "Mídia", icon: "media" },
+      { id: "crm", label: "CRM", icon: "crm" },
+      { id: "ia", label: "IA", icon: "ai" },
+      { id: "automacoes", label: "Automações", icon: "automation" },
+      { id: "dashboards", label: "Dashboards", icon: "dashboard" },
+      { id: "whatsapp", label: "WhatsApp", icon: "whatsapp" },
+    ],
   },
 
   // SEÇÃO Portfolio (MANTÉM)
@@ -247,7 +289,7 @@ export const getSiteConfig = (locale: Locale) => {
       ...SITE_CONFIG_PT,
       brand: {
         ...SITE_CONFIG_PT.brand,
-        tagline: 'Digital Evolution',
+        tagline: 'Technology that drives results',
       },
       hero: {
         badge: 'TechT — complete marketing operation (Manaus & remote)',
@@ -255,7 +297,7 @@ export const getSiteConfig = (locale: Locale) => {
         titleHighlight: 'sale',
         titlePart2: ', in one ecosystem.',
         description:
-          'You hire a complete marketing operation to acquire customers consistently. From media to closing, each stage reduces waste and increases predictability. AI supports validation and analysis; strategy and execution remain human-led inside TechT Ecosystem.',
+          'You hire a complete marketing operation built to win customers consistently. From media to close, every stage cuts waste and builds predictability. AI supports validation and analysis. Strategy and execution stay human-led, inside the TechT Ecosystem.',
         ctaButton: 'I want to structure my marketing operation',
         ctaSecondary: 'See the platform',
         primaryWaMessage:
@@ -268,28 +310,71 @@ export const getSiteConfig = (locale: Locale) => {
         titleHighlight: 'agency operations hub',
         titleSuffix: '',
         description:
-          'Multi-tenant SaaS to organize your operation: CRM, traffic, client portal, scheduling, automations, finance and analytics — with an AI layer to support validation, prioritization and data reading (not replacement).',
+          'Multi-client system to organize your operation: CRM, traffic, client portal, scheduling, automations, finance and analytics — with an AI layer to support validation, prioritization and data reading (not replacement).',
       },
       about: {
         ...SITE_CONFIG_PT.about,
-        badge: 'About us',
-        title: 'Engineering the ',
-        titleHighlight: 'Future',
-        titleSuffix: ' through code.',
+        badge: 'TechT Ecosystem',
+        title: 'Technology, media and operation ',
+        titleHighlight: 'connected to drive growth',
+        titleSuffix: '.',
         description:
-          'TechT is led by Thiago Passos and combines performance marketing, content and software engineering in one package for businesses that take acquisition seriously. AI supports analysis and priorities, while a well-executed marketing operation remains the core.',
+          'TechT is an ecosystem that connects technology, media, content, CRM, automations, AI and sales operation into a single growth system. Every layer talks to the next to reduce waste, increase predictability and bring strategic clarity to every decision.',
+        founderName: 'TechT',
         stats: {
           ...SITE_CONFIG_PT.about.stats,
           label: 'Projects delivered',
         },
         purpose: {
-          title: 'Innovation',
-          text: 'Strategy and execution with a modern stack: performance, UX and tools that improve decision clarity in acquisition.',
+          title: 'Connected operation',
+          text: 'Media, CRM, content, automations and data running as a single system — no silos, no rework.',
         },
         expertise: {
-          title: 'Support',
-          text: 'Close to your team after go-live: campaigns, automations and platform evolving with your business.',
+          title: 'Applied intelligence',
+          text: 'AI embedded in analysis, validation and prioritization to speed up decisions based on real signals.',
         },
+        manifestoEyebrow: 'Vision',
+        manifestoLead:
+          'TechT is a technology company applied to growth. We operate as a connected ecosystem — media, CRM, AI, automations, dashboards and WhatsApp orchestrated into a single system, where each layer talks to the next to reduce waste, increase predictability and bring context to every decision.',
+        manifestoTail:
+          'AI accelerates analysis, validation and recommendations. Strategic direction stays human, guided by each client’s real context — premium execution, stage by stage.',
+        valueCards: [
+          {
+            id: 'operation',
+            title: 'Connected operation',
+            text: 'Media, CRM, content, automations and data running as a single system — no silos and no rework.',
+          },
+          {
+            id: 'intelligence',
+            title: 'Applied intelligence',
+            text: 'AI present in analysis, validation and prioritization to speed up decisions based on real signals.',
+          },
+          {
+            id: 'growth',
+            title: 'Structured growth',
+            text: 'Every step measured, tuned and optimized so your revenue grows predictably — not by chance.',
+          },
+          {
+            id: 'ecosystem',
+            title: 'Proprietary platform',
+            text: 'An in-house layer that organizes execution, numbers and context into a single operation view.',
+          },
+        ],
+        metrics: [
+          { id: 'projects', value: 50, suffix: '+', label: 'Projects delivered' },
+          { id: 'ops', value: 12, suffix: '+', label: 'Active operations' },
+          { id: 'camps', value: 80, suffix: '+', label: 'Campaigns managed' },
+          { id: 'flows', value: 1200, suffix: '+', label: 'Automated flows' },
+        ],
+        ecosystemHub: 'TECHT',
+        ecosystemNodes: [
+          { id: 'midia', label: 'Media', icon: 'media' },
+          { id: 'crm', label: 'CRM', icon: 'crm' },
+          { id: 'ia', label: 'AI', icon: 'ai' },
+          { id: 'automacoes', label: 'Automations', icon: 'automation' },
+          { id: 'dashboards', label: 'Dashboards', icon: 'dashboard' },
+          { id: 'whatsapp', label: 'WhatsApp', icon: 'whatsapp' },
+        ],
       },
       contact: {
         ...SITE_CONFIG_PT.contact,

@@ -1,9 +1,7 @@
 
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Play } from 'lucide-react';
-import { GRADIENTS, SOCIALS, whatsappPrefill } from '../../constants';
+import { GRADIENTS, whatsappPrefill } from '../../constants';
 import Container from '../ui/Container';
 import { trackWhatsAppClick } from '../analytics/GoogleTagManager';
 import { useSiteConfig } from '../../hooks/useSiteConfig';
@@ -12,7 +10,8 @@ import { useAppPreferences } from '../../context/AppPreferencesContext';
 import AuroraBackground from '../effects/AuroraBackground';
 import ShineEffect from '../effects/ShineEffect';
 import TypewriterHeadline from '../effects/TypewriterHeadline';
-import AntigravityBackdrop from '../effects/AntigravityBackdrop';
+import WaveBackdrop from '../effects/WaveBackdrop';
+import GlowBorder from '../effects/GlowBorder';
 
 const Hero: React.FC = () => {
   const { hero } = useSiteConfig();
@@ -30,20 +29,30 @@ const Hero: React.FC = () => {
   return (
     <section id="inicio" className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden isolate">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,12,18,0.42),rgba(5,5,7,0.92)_58%,rgba(4,4,6,0.98)_100%)]" />
-      <AuroraBackground className="absolute inset-0 opacity-60" />
-      <div className="lava-blob w-[420px] h-[420px] top-[-110px] left-[8%] bg-[#00D2FF]/24" />
+      <WaveBackdrop className="opacity-70 z-[1]" />
+      <AuroraBackground className="absolute inset-0 opacity-35 z-[2]" />
+      <div className="lava-blob w-[420px] h-[420px] top-[-110px] left-[8%] bg-[#00D2FF]/18 z-[2]" />
       <div
-        className="lava-blob w-[380px] h-[380px] bottom-[-120px] right-[12%] bg-[#9D50BB]/22"
+        className="lava-blob w-[380px] h-[380px] bottom-[-120px] right-[12%] bg-[#9D50BB]/18 z-[2]"
         style={{ animationDelay: '3s', animationDuration: '19s' }}
       />
       <div
-        className="lava-blob w-[260px] h-[260px] top-[28%] right-[33%] bg-[#2e7bff]/20"
+        className="lava-blob w-[260px] h-[260px] top-[28%] right-[33%] bg-[#2e7bff]/16 z-[2]"
         style={{ animationDelay: '1.2s', animationDuration: '15s' }}
       />
-      <div className="hero-grid-mask opacity-70" />
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#00D2FF]/10 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#9D50BB]/10 blur-[120px] rounded-full pointer-events-none" />
-      <AntigravityBackdrop className="opacity-[0.92] z-[7]" />
+      <div className="hero-grid-mask opacity-40 z-[3]" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#00D2FF]/8 blur-[120px] rounded-full pointer-events-none z-[2]" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#9D50BB]/8 blur-[120px] rounded-full pointer-events-none z-[2]" />
+
+      {/* Vinheta de leitura: escurece sutilmente o centro onde está o texto */}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-[4] pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 62% 48% at 50% 40%, rgba(5,5,8,0.78) 0%, rgba(5,5,8,0.55) 35%, rgba(5,5,8,0.25) 60%, transparent 80%)',
+        }}
+      />
 
       <Container className="relative z-10">
         <div className="text-center max-w-4xl mx-auto">
@@ -85,30 +94,30 @@ const Hero: React.FC = () => {
             className="flex flex-col items-center justify-center gap-8 mb-12"
           >
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-              <ShineEffect duration={4.6}>
-                <a
-                  href={whatsappPrefill(
-                    hero.primaryWaMessage ||
-                      'Olá! Vim pelo site da TechT e quero falar com o time comercial.'
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackWhatsAppClick('hero')}
-                  className={`${GRADIENTS.primary} text-black px-10 py-4 rounded-full font-bold text-lg hover:scale-[1.03] transition-all shadow-[0_0_30px_rgba(0,210,255,0.42)] hover:shadow-[0_0_38px_rgba(140,100,255,0.34)] inline-block text-center min-w-[240px]`}
-                >
-                  {hero.ctaButton}
-                </a>
-              </ShineEffect>
-
-              <Link
-                to="/inteligencia"
-                className="inline-flex items-center gap-2 px-6 py-4 rounded-full font-bold text-lg border-2 border-white/15 bg-white/[0.02] text-white hover:border-[#00D2FF]/60 hover:text-[#00D2FF] hover:bg-white/[0.06] transition-all"
+              <GlowBorder
+                className="rounded-full inline-block"
+                thickness="1.5px"
+                duration="4.5s"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 border border-white/10 transition-transform duration-300">
-                  <Play className="w-4 h-4 fill-current text-[#00D2FF]" />
-                </span>
-                {hero.ctaSecondary}
-              </Link>
+                <ShineEffect
+                  duration={4.6}
+                  className={`${GRADIENTS.primary} rounded-full inline-block shadow-[0_0_30px_rgba(0,210,255,0.42)] hover:shadow-[0_0_38px_rgba(140,100,255,0.34)] hover:scale-[1.03] transition-all duration-300 will-change-transform`}
+                >
+                  <a
+                    href={whatsappPrefill(
+                      hero.primaryWaMessage ||
+                        'Olá! Vim pelo site da TechT e quero falar com o time comercial.'
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick('hero')}
+                    className="relative z-10 block text-black px-10 py-4 font-bold text-lg text-center min-w-[240px] rounded-full"
+                  >
+                    {hero.ctaButton}
+                  </a>
+                </ShineEffect>
+              </GlowBorder>
+
             </div>
 
             <div className="flex items-center justify-center gap-3">
@@ -127,27 +136,6 @@ const Hero: React.FC = () => {
                 {ui.heroMicrocopy}
               </p>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.55, delay: afterTypingDelay + 0.56 }}
-            className="flex items-center justify-center gap-4 pt-4 border-t border-white/5"
-          >
-            {SOCIALS.map((social) => (
-              <motion.a
-                key={social.name}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -3, scale: 1.08 }}
-                className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:border-[#00D2FF] hover:shadow-[0_0_15px_rgba(0,210,255,0.2)] transition-all"
-                title={social.name}
-              >
-                {social.icon}
-              </motion.a>
-            ))}
           </motion.div>
         </div>
       </Container>

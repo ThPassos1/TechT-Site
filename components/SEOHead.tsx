@@ -59,7 +59,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       addressCountry: 'BR',
     },
     sameAs: [
-      'https://www.instagram.com/techt.dev/',
+      'https://www.instagram.com/techt.br/',
       WHATSAPP_URL,
     ],
     image: image,
@@ -74,7 +74,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     logo: 'https://techtai.com.br/logo.svg',
     description: description,
     sameAs: [
-      'https://www.instagram.com/techt.dev/',
+      'https://www.instagram.com/techt.br/',
       WHATSAPP_URL,
     ],
     address: {

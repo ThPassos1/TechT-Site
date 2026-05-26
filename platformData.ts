@@ -5,84 +5,72 @@
 
 export const PLATFORM_PREVIEW = {
   productName: "Ecossistema TechT",
-  subtitle:
-    "CRM, tráfego pago, automações, financeiro e portal do cliente — visão unificada.",
-  clientContext: "Cliente em gestão (exemplo)",
-  moduleCaption: "Módulo Core com analytics e operações em tempo real.",
+  subtitle: "CRM, tráfego pago, automações, financeiro e portal cliente",
+  clientLabel: "Cliente em gestão",
+  clientName: "Aurora Estética",
+  moduleCaption:
+    "Módulo Core com design premium, motion design, analytics e operações em tempo real.",
+  adminLabel: "Administrador TechT — Visão Admin",
 
   sidebar: [
-    {
-      group: "Principal",
-      items: [{ label: "Dashboard", active: true }],
-    },
-    {
-      group: "CRM",
-      items: [
-        { label: "Leads", active: false },
-        { label: "Pipeline", active: false },
-        { label: "Contatos", active: false },
-        { label: "Empresas", active: false },
-        { label: "Conversas", active: false, star: true },
-        { label: "Tarefas", active: false },
-        { label: "Propostas", active: false },
-        { label: "Produtos", active: false },
-        { label: "Relatórios", active: false },
-      ],
-    },
-    {
-      group: "Tráfego pago",
-      items: [
-        { label: "Campanhas", active: false, star: true },
-        { label: "Analytics", active: false },
-      ],
-    },
-    {
-      group: "TechT AI",
-      items: [
-        { label: "Insights", active: false },
-        { label: "Recomendações", active: false },
-        { label: "Relatórios IA", active: false },
-      ],
-    },
+    { label: "Dashboard", icon: "dashboard", active: true },
+    { label: "CRM", icon: "crm" },
+    { label: "TRÁFEGO PAGO", icon: "ads" },
+    { label: "TECHT AI", icon: "ai" },
+    { label: "OPERAÇÕES", icon: "ops" },
+    { label: "ADMIN", icon: "admin" },
+    { label: "PORTAL DO CLIENTE", icon: "portal" },
   ],
 
   insightsIA: [
     {
       label: "Leads sem resposta",
       value: "7",
-      sub: "3 com SLA crítico > 4h",
+      sub: "3 com SLA crítico (>4h)",
       tone: "amber" as const,
     },
     {
-      label: "Campanhas com alerta",
+      label: "Campanhas com problema",
       value: "2",
-      sub: "CPC alto / queda de conversão",
+      sub: "CPC alto e queda de conversões",
       tone: "rose" as const,
     },
     {
       label: "Oportunidades",
       value: "4",
-      sub: "Remarketing e upsell",
+      sub: "Remarketing e upsell de contrato",
       tone: "cyan" as const,
     },
     {
       label: "Crescimento",
       value: "+18%",
-      sub: "Leads vs. semana anterior",
+      sub: "Leads vs semana anterior",
       tone: "emerald" as const,
     },
     {
-      label: "Performance mídia",
+      label: "Queda performance",
       value: "-6%",
-      sub: "ROAS médio — revisar criativos",
+      sub: "ROAS médio — revisar criativos Meta",
       tone: "violet" as const,
     },
   ],
 
   kpis: [
-    { label: "Total de leads", value: "1389", trend: "+12%", trendUp: true },
-    { label: "Valor no pipeline", value: "R$ 890k", trend: "Consolidado", trendUp: true },
-    { label: "ROAS médio", value: "4.8x", trend: "Meta + Google", trendUp: true },
-    { label: "Receita", value: "R$ 384k", trend: "Período atual", trendUp: true },
+    { label: "Total de Leads", value: "1389" },
+    { label: "Valor do Pipeline", value: "890.000 R$" },
+    { label: "ROAS Médio", value: "4.8x" },
+    { label: "Receita", value: "384.250 R$" },
   ],
+
+  charts: [
+    { id: "line", title: "Line + Area animado" },
+    { id: "bars", title: "Barras crescendo" },
+    { id: "pie", title: "Pie + Funnel" },
+    { id: "radar", title: "Radar + Heatmap D3" },
+  ],
+
+  axis: {
+    x: ["Seg", "Ter", "Qua", "Qui", "Sex"],
+    y: ["220", "165", "110", "55", "0"],
+  },
 } as const;

@@ -73,16 +73,23 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", showText = true }) => {
         </div>
       </div>
 
-      {showText && (
-        <div className="flex flex-col justify-center border-l border-white/10 pl-4 h-10">
-          <span className="text-white font-bold text-base lg:text-xl tracking-[0.18em] leading-none font-mono uppercase">
-            {brand.name}{brand.highlight ? <span className={GRADIENTS.text}>{brand.highlight}</span> : null}
-          </span>
-          <span className="text-[7px] sm:text-[8px] text-[#00D2FF] tracking-[0.24em] font-bold uppercase opacity-80 mt-1">
-            {brand.tagline}
-          </span>
-        </div>
-      )}
+      {showText && (() => {
+        // Pinta a última letra do nome em azul (e usa o que vier antes em branco).
+        const base = brand.name.slice(0, -1);
+        const accent = brand.name.slice(-1);
+        return (
+          <div className="flex flex-col justify-center border-l border-white/10 pl-4">
+            <span className="font-bold text-base lg:text-xl tracking-[0.18em] leading-none font-mono uppercase whitespace-nowrap">
+              <span className="text-white">{base}</span>
+              <span className="text-[#00D2FF] drop-shadow-[0_0_6px_rgba(0,210,255,0.55)]">{accent}</span>
+              {brand.highlight ? <span className={GRADIENTS.text}>{brand.highlight}</span> : null}
+            </span>
+            <span className="text-[8.5px] sm:text-[9.5px] text-[#00D2FF]/90 tracking-[0.2em] font-semibold uppercase mt-1.5 leading-none whitespace-nowrap">
+              {brand.tagline}
+            </span>
+          </div>
+        );
+      })()}
     </div>
   );
 };

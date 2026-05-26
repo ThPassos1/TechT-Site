@@ -2,14 +2,17 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Container from '../ui/Container';
-import { GRADIENTS, SOCIALS, EMAIL_JS_CONFIG } from '../../constants';
+import { GRADIENTS, SOCIALS, EMAIL_JS_CONFIG, whatsappPrefill } from '../../constants';
 import { useContactForm } from '../../hooks/useContactForm';
 import { BorderBeam } from '../effects/BorderBeam';
-import { trackFormSubmit } from '../analytics/GoogleTagManager';
+import GlowBorder from '../effects/GlowBorder';
+import { trackFormSubmit, trackWhatsAppClick } from '../analytics/GoogleTagManager';
 import { useSiteConfig } from '../../hooks/useSiteConfig';
 import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { UI_TEXT } from '../../i18n/ui';
 import TypewriterHeadline from '../effects/TypewriterHeadline';
+import WhatsAppIcon from '../ui/WhatsAppIcon';
+import { ArrowUpRight } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const { form, status, errorMsg, handleChange, handleSubmit } = useContactForm();
@@ -18,7 +21,7 @@ const Contact: React.FC = () => {
   const ui = UI_TEXT[locale];
   const reducedMotion = useReducedMotion();
   const headingDelay = reducedMotion ? 0 : 0.36;
-  const headingInterval = reducedMotion ? 0 : 105;
+  const headingInterval = reducedMotion ? 0 : 70;
   const headingTextLength = `${contact.title}${contact.titleHighlight}${contact.titleSuffix ?? ''}`.length;
   const titleDoneDelay = reducedMotion
     ? 0
@@ -86,14 +89,128 @@ const Contact: React.FC = () => {
               transition={{ duration: 0.45, delay: titleDoneDelay + 0.2 }}
               className="mt-12"
             >
-              <p className="text-sm text-gray-500 uppercase font-bold tracking-wider mb-4">{ui.contactFollow}</p>
-              <div className="flex space-x-4">
-                {SOCIALS.map(social => (
-                  <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-[#00D2FF] hover:text-[#00D2FF] transition-all">
-                    {social.icon}
-                  </a>
-                ))}
+              <div className="flex items-center gap-2 mb-4">
+                <span className="relative inline-flex w-2 h-2 rounded-full bg-[#25D366] shadow-[0_0_10px_rgba(37,211,102,0.95)]">
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-60"
+                  />
+                </span>
+                <p className="text-[11px] text-[#9DE9FF]/80 uppercase font-semibold tracking-[0.32em]">
+                  {ui.contactPreferredChannel}
+                </p>
               </div>
+
+              {(() => {
+                const whats = SOCIALS.find(s => s.name === 'WhatsApp');
+                const whatsHref = whats?.href
+                  ?? whatsappPrefill(
+                    locale === 'pt'
+                      ? 'Olá, TechT! Quero conversar sobre minha operação de marketing e agendar uma reunião.'
+                      : 'Hi TechT! I would like to talk about my marketing operation and book a meeting.',
+                  );
+                return (
+                  <GlowBorder
+                    className="rounded-2xl block"
+                    thickness="1.5px"
+                    duration="4.5s"
+                    color="rgba(37,211,102,0.9)"
+                    accent="rgba(255,255,255,0.6)"
+                  >
+                    <a
+                      href={whatsHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackWhatsAppClick('contact-section')}
+                      className="group relative z-10 block w-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#1FAE52] via-[#22C75E] to-[#1EBE5C] text-white shadow-[0_0_36px_rgba(37,211,102,0.32),0_22px_50px_-22px_rgba(37,211,102,0.55)] hover:shadow-[0_0_50px_rgba(37,211,102,0.5),0_26px_56px_-22px_rgba(37,211,102,0.7)] transition-shadow duration-300"
+                    >
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-x-6 top-0 h-px"
+                        style={{
+                          background:
+                            'linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent)',
+                        }}
+                      />
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-0 group-hover:opacity-80 transition-opacity duration-500"
+                        style={{
+                          background:
+                            'radial-gradient(circle at center, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 70%)',
+                        }}
+                      />
+                      <div className="relative flex items-center gap-4 md:gap-5 px-5 md:px-6 py-5 md:py-6">
+                        <span className="relative inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/15 border border-white/25 shrink-0 shadow-[inset_0_0_24px_rgba(255,255,255,0.18)]">
+                          <WhatsAppIcon className="w-7 h-7 md:w-8 md:h-8 text-white" />
+                          <span
+                            aria-hidden
+                            className="absolute -top-1 -right-1 inline-flex w-3.5 h-3.5 rounded-full bg-white border-2 border-[#1FAE52]"
+                          >
+                            <span
+                              aria-hidden
+                              className="absolute inset-0 rounded-full bg-white animate-ping opacity-70"
+                            />
+                          </span>
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="text-white font-bold text-[1.05rem] md:text-[1.15rem] tracking-tight">
+                              {ui.contactWhatsTitle}
+                            </h3>
+                            <span className="inline-flex items-center gap-1.5 text-[10.5px] md:text-[11px] font-semibold uppercase tracking-[0.16em] text-white/95 px-2 py-0.5 rounded-full bg-white/15 border border-white/25">
+                              <span className="inline-block w-1.5 h-1.5 rounded-full bg-white" />
+                              {ui.contactWhatsOnline}
+                            </span>
+                          </div>
+                          <p className="mt-1 text-[0.85rem] md:text-[0.92rem] text-white/85 leading-snug">
+                            {ui.contactWhatsSubtitle}
+                          </p>
+                        </div>
+                        <span className="hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/15 border border-white/30 text-white shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                          <ArrowUpRight className="w-[18px] h-[18px]" strokeWidth={2} />
+                        </span>
+                      </div>
+                    </a>
+                  </GlowBorder>
+                );
+              })()}
+
+              {(() => {
+                const others = SOCIALS.filter(s => s.name !== 'WhatsApp');
+                if (others.length === 0) return null;
+                return (
+                  <div className="mt-6 flex items-center gap-4">
+                    <p className="text-[11px] text-gray-500 uppercase font-semibold tracking-[0.28em] shrink-0">
+                      {ui.contactAlsoAt}
+                    </p>
+                    <span aria-hidden className="flex-1 h-px bg-white/[0.06]" />
+                    <div className="flex items-center gap-2">
+                      {others.map(social => {
+                        const handle =
+                          social.name === 'Instagram' ? '@techt.br' : social.name;
+                        return (
+                          <a
+                            key={social.name}
+                            href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={social.name}
+                            className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-white/85 hover:text-white hover:border-white/25 transition-colors"
+                          >
+                            <span className="text-white/70 group-hover:text-white transition-colors">
+                              {social.icon}
+                            </span>
+                            <span className="text-[12.5px] font-medium tracking-wide">
+                              {handle}
+                            </span>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
             </motion.div>
           </div>
 
@@ -152,10 +269,16 @@ const Contact: React.FC = () => {
                 <p className="text-red-500 text-sm font-medium">{errorMsg}</p>
               )}
 
+              <GlowBorder
+                className="rounded-xl block w-full"
+                thickness="1.5px"
+                duration="4.5s"
+                color={status === 'success' ? 'rgba(34,197,94,0.85)' : undefined}
+              >
               <button 
                 type="submit"
                 disabled={status === 'sending'}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center relative overflow-hidden group/btn ${
+                className={`relative z-10 w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center overflow-hidden group/btn ${
                   status === 'success' ? 'bg-green-500 text-white shadow-[0_0_20px_rgba(34,197,94,0.5)]' : `${GRADIENTS.primary} text-black hover:shadow-[0_0_30px_rgba(0,210,255,0.5)] hover:scale-105`
                 }`}
               >
@@ -185,6 +308,7 @@ const Contact: React.FC = () => {
                   )}
                 </span>
               </button>
+              </GlowBorder>
             </form>
           </motion.div>
         </div>

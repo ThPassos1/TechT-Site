@@ -6,14 +6,11 @@ import Footer from './components/layout/Footer';
 import SEOHead from './components/SEOHead';
 // import { GoogleTagManager, trackPageView } from './components/analytics/GoogleTagManager'; // TODO: Ativar com GTM ID
 import Hero from './components/sections/Hero';
-import Portfolio from './components/sections/Portfolio';
 import Offerings from './components/sections/Offerings';
 import Contact from './components/sections/Contact';
-import About from './components/sections/About';
 import OperationVisual from './components/sections/OperationVisual';
 import { GoogleTagManager, trackPageView } from './components/analytics/GoogleTagManager';
 import { useAppPreferences } from './context/AppPreferencesContext';
-import SectionReveal from './components/effects/SectionReveal';
 
 import Blog from './components/sections/blog.tsx';
 import BlogPost from "./components/sections/blog/BlogPost";
@@ -24,7 +21,6 @@ const ScrollToSection = () => {
 
   useEffect(() => {
     const targetId = pathname.substring(1);
-
     trackPageView(pathname || '/');
 
     if (!targetId) {
@@ -32,19 +28,32 @@ const ScrollToSection = () => {
       return;
     }
 
-    const element = document.getElementById(targetId);
-    if (element) {
-      const headerOffset = 100;
+    const headerOffset = 100;
+
+    const scrollToId = () => {
+      const element = document.getElementById(targetId);
+      if (!element) return false;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      return true;
+    };
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // 1ª tentativa imediata, depois RAF, depois retry curto.
+    // Cobre o caso de navegação entre /servicos -> /sobre (DOM já montado)
+    // e também o de deep-link inicial (DOM pode ainda estar a montar).
+    if (scrollToId()) return;
+
+    let attempts = 0;
+    let rafId = 0;
+    const tick = () => {
+      attempts += 1;
+      if (scrollToId() || attempts >= 12) return;
+      rafId = window.requestAnimationFrame(tick);
+    };
+    rafId = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(rafId);
   }, [pathname]);
 
   return null;
@@ -91,34 +100,38 @@ const HomePage = () => {
     <main>
       <SEOHead title={seo.title} description={seo.description} keywords={seo.keywords} />
       <Hero />
-      <SectionReveal delay={0.05}>
-        <OperationVisual />
-      </SectionReveal>
-      <SectionReveal delay={0.05}>
-        <Offerings />
-      </SectionReveal>
-      <SectionReveal delay={0.08}>
-        <About />
-      </SectionReveal>
-      <SectionReveal delay={0.1}>
-        <Portfolio />
-      </SectionReveal>
-      <SectionReveal delay={0.12}>
-        <Contact />
-      </SectionReveal>
+      <OperationVisual />
+      <Offerings />
+      <Contact />
     </main>
   );
 };
+
+const HOME_ROUTES = new Set([
+  '/',
+  '/sobre',
+  '/inteligencia',
+  '/portfolio',
+  '/servicos',
+  '/contato',
+]);
 
 const App: React.FC = () => {
   const gtmId = import.meta.env.VITE_GTM_ID;
   const AnimatedRoutes = () => {
     const location = useLocation();
 
+    // Todas as rotas que renderizam HomePage compartilham a mesma key,
+    // para que a página não desmonte ao navegar entre seções e o scroll
+    // por âncora (#sobre, #servicos, etc.) funcione corretamente.
+    const animationKey = HOME_ROUTES.has(location.pathname)
+      ? 'home'
+      : location.pathname;
+
     return (
       <AnimatePresence mode="wait">
         <motion.div
-          key={location.pathname}
+          key={animationKey}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}

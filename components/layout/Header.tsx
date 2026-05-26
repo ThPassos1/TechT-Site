@@ -1,11 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Play } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { GRADIENTS, SOCIALS, WHATSAPP_URL } from '../../constants';
+import { GRADIENTS, SOCIALS, WHATSAPP_URL, whatsappPrefill } from '../../constants';
 import Container from '../ui/Container';
 import Logo from '../ui/Logo';
+import GlowBorder from '../effects/GlowBorder';
+import WhatsAppIcon from '../ui/WhatsAppIcon';
+import { trackWhatsAppClick } from '../analytics/GoogleTagManager';
 import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { UI_TEXT, getNavigation } from '../../i18n/ui';
 
@@ -15,6 +18,13 @@ const Header: React.FC = () => {
   const { locale, toggleLocale } = useAppPreferences();
   const ui = UI_TEXT[locale];
   const nav = getNavigation(locale);
+  const platformLabel = locale === 'pt' ? 'Plataforma' : 'Platform';
+  const platformLabelFull = locale === 'pt' ? 'Acessar Plataforma' : 'Access Platform';
+  const headerWaMessage =
+    locale === 'pt'
+      ? 'Olá! Vim pelo site da TechT e quero começar — me conte como vocês estruturam a operação de marketing.'
+      : 'Hello! I came from TechT website and want to get started — tell me how you structure the marketing operation.';
+  const headerWaHref = whatsappPrefill(headerWaMessage);
 
   // Bloquear scroll quando o menu estiver aberto para evitar que o fundo se mova
   useEffect(() => {
@@ -62,7 +72,7 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-10 ml-16">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 ml-10 xl:ml-16">
             {nav.map((item) => (
               <Link
                 key={item.name}
@@ -72,6 +82,43 @@ const Header: React.FC = () => {
                 {item.name}
               </Link>
             ))}
+
+            {/* Redes sociais — só em xl+ para não apertar no lg */}
+            <div className="hidden xl:flex items-center gap-1.5 pl-2 border-l border-white/10">
+              {SOCIALS.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={social.name}
+                  aria-label={social.name}
+                  className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:border-[#00D2FF] hover:text-[#00D2FF] transition-all"
+                >
+                  <span className="[&_svg]:w-4 [&_svg]:h-4 flex">{social.icon}</span>
+                </a>
+              ))}
+            </div>
+
+            {/* Acessar Plataforma — compacto, com glow border rotacional */}
+            <GlowBorder
+              className="rounded-full inline-block"
+              thickness="1.5px"
+              duration="5s"
+            >
+              <Link
+                to="/inteligencia"
+                className="relative z-10 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#0a0a0a]/95 text-xs font-bold uppercase tracking-wider text-white hover:text-[#00D2FF] hover:scale-[1.04] shadow-[0_0_18px_rgba(0,210,255,0.25)] hover:shadow-[0_0_28px_rgba(0,210,255,0.45)] transition-all duration-300"
+                title={platformLabelFull}
+              >
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/10">
+                  <Play className="w-3 h-3 fill-current text-[#00D2FF]" />
+                </span>
+                <span className="hidden xl:inline">{platformLabelFull}</span>
+                <span className="xl:hidden">{platformLabel}</span>
+              </Link>
+            </GlowBorder>
+
             <button
               type="button"
               onClick={toggleLocale}
@@ -80,12 +127,16 @@ const Header: React.FC = () => {
             >
               {locale === 'pt' ? 'EN' : 'PT'}
             </button>
-            <Link
-              to="/contato"
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 ${GRADIENTS.primary} text-black shadow-[0_0_25px_rgba(0,210,255,0.4)] hover:shadow-[0_0_35px_rgba(146,95,255,0.34)]`}
+            <a
+              href={headerWaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick('header-desktop')}
+              className={`inline-flex items-center gap-2 px-6 xl:px-8 py-3 rounded-full font-bold text-xs uppercase tracking-tighter transition-all hover:scale-105 active:scale-95 ${GRADIENTS.primary} text-black shadow-[0_0_25px_rgba(0,210,255,0.4)] hover:shadow-[0_0_35px_rgba(146,95,255,0.34)]`}
             >
+              <WhatsAppIcon className="w-4 h-4 shrink-0" />
               {ui.start}
-            </Link>
+            </a>
           </nav>
 
           {/* Mobile Toggle Button */}
@@ -148,13 +199,32 @@ const Header: React.FC = () => {
 
               {/* Action Area */}
               <div className="mt-12 space-y-4 pb-8">
-                <Link
-                  to="/contato"
-                  onClick={() => setIsOpen(false)}
-                  className={`block w-full py-4 text-center rounded-2xl font-bold text-lg uppercase tracking-widest ${GRADIENTS.primary} text-black shadow-[0_0_30px_rgba(0,210,255,0.4)]`}
+                <a
+                  href={headerWaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    trackWhatsAppClick('header-mobile');
+                    setIsOpen(false);
+                  }}
+                  className={`flex items-center justify-center gap-3 w-full py-4 text-center rounded-2xl font-bold text-lg uppercase tracking-widest ${GRADIENTS.primary} text-black shadow-[0_0_30px_rgba(0,210,255,0.4)]`}
                 >
+                  <WhatsAppIcon className="w-5 h-5 shrink-0" />
                   {ui.start}
-                </Link>
+                </a>
+
+                <GlowBorder className="rounded-2xl block w-full" thickness="1.5px" duration="5s">
+                  <Link
+                    to="/inteligencia"
+                    onClick={() => setIsOpen(false)}
+                    className="relative z-10 flex items-center justify-center gap-3 w-full py-3.5 rounded-2xl bg-[#0a0a0a]/95 text-white font-bold text-sm uppercase tracking-widest shadow-[0_0_22px_rgba(0,210,255,0.25)] hover:text-[#00D2FF] hover:shadow-[0_0_32px_rgba(0,210,255,0.45)] transition-all"
+                  >
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 border border-white/10">
+                      <Play className="w-3.5 h-3.5 fill-current text-[#00D2FF]" />
+                    </span>
+                    {platformLabelFull}
+                  </Link>
+                </GlowBorder>
 
                 <a
                   href={WHATSAPP_URL}

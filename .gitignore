@@ -42,3 +42,12 @@ coverage/
 
 # GitHub Pages branch (opcional)
 gh-pages/
+
+# Cursor / IDE local
+.cursor/
+
+# Vídeos fonte não referenciados no código (evita push >100MB no GitHub)
+assets/videos/Captação premium em 4k.mp4
+assets/videos/Conteúdo Institucional.mp4
+assets/videos/Produção em estúdio.mp4
+assets/videos/Reels de lançamento.mp4

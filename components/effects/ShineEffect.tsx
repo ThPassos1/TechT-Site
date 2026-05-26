@@ -4,6 +4,13 @@ interface ShineEffectProps {
   children: React.ReactNode;
   duration?: number;
   delay?: number;
+  /**
+   * Classes extras aplicadas ao wrapper. Útil para forçar o wrapper a
+   * herdar a forma do filho (ex.: `rounded-full`) para que o brilho
+   * e a sombra sejam recortados pelas mesmas curvas — evita o efeito
+   * de "bordas quadradas" em botões em formato pílula.
+   */
+  className?: string;
 }
 
 /**
@@ -14,6 +21,7 @@ export const ShineEffect: React.FC<ShineEffectProps> = ({
   children,
   duration = 6,
   delay = 0,
+  className = '',
 }) => {
   const animationId = useMemo(
     () => Math.random().toString(36).slice(2, 11),
@@ -61,7 +69,7 @@ export const ShineEffect: React.FC<ShineEffectProps> = ({
 
   return (
     <div
-      className={`relative overflow-hidden shine-animated-${animationId}`}
+      className={`relative overflow-hidden shine-animated-${animationId} ${className}`.trim()}
     >
       {children}
     </div>
