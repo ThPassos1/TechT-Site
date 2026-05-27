@@ -475,8 +475,9 @@ const HubDiagramStage: React.FC<HubDiagramStageProps> = ({ hub, nodes, reducedMo
     <div
       ref={wrapRef}
       className={`relative w-full rounded-[32px] border border-white/[0.06] bg-gradient-to-br from-[#0a0a12]/90 via-[#06060c]/60 to-[#0a0814]/80 lg:min-h-[660px] xl:min-h-[700px] ${
-        isCompact ? 'overflow-x-auto overscroll-x-contain touch-pan-x' : 'overflow-hidden lg:overflow-visible'
+        isCompact ? 'overflow-x-auto touch-manipulation [-webkit-overflow-scrolling:touch]' : 'overflow-hidden lg:overflow-visible'
       }`}
+      style={isCompact ? { touchAction: 'pan-x pan-y' } : undefined}
     >
       <div
         className={`flex w-full py-2 lg:min-h-[660px] lg:items-center lg:justify-center lg:px-8 lg:py-10 xl:min-h-[700px] ${
