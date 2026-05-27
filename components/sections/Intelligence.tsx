@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Container from '../ui/Container';
 import { GRADIENTS } from '../../constants';
@@ -51,149 +51,224 @@ const ChartFrame: React.FC<{
   children: React.ReactNode;
   className?: string;
 }> = ({ title, children, className = '' }) => (
-  <div className={`rounded-2xl border border-white/10 bg-[#0f0f14] p-4 md:p-5 ${className}`}>
-    <p className="text-[10.5px] text-gray-500 mb-3 tracking-wide">{title}</p>
-    {children}
+  <div className={`overflow-hidden rounded-2xl border border-white/10 bg-[#0f0f14] p-4 md:p-5 ${className}`}>
+    <p className="mb-3 text-[10.5px] tracking-wide text-gray-500">{title}</p>
+    <div className="overflow-hidden">{children}</div>
   </div>
 );
 
-const YAxisLabels: React.FC<{ labels: readonly string[] }> = ({ labels }) => (
-  <div className="flex flex-col justify-between text-[9px] text-gray-600 font-mono pr-2 py-1 shrink-0">
-    {labels.map((l) => (
-      <span key={l} className="leading-none">
-        {l}
-      </span>
-    ))}
-  </div>
-);
+const gridYs = [72, 56.5, 41, 25.5, 10] as const;
 
-const XAxisLabels: React.FC<{ labels: readonly string[] }> = ({ labels }) => (
-  <div className="flex justify-between text-[9px] text-gray-600 font-mono pt-1">
-    {labels.map((l) => (
-      <span key={l} className="leading-none">
-        {l}
-      </span>
-    ))}
-  </div>
-);
-
-const Gridlines: React.FC = () => (
+const ChartGrid: React.FC = () => (
   <>
-    {[10, 30, 50, 70, 90].map((y) => (
+    {gridYs.map((y) => (
       <line
         key={y}
-        x1="0"
+        x1={PLOT_BOUNDS.left}
         y1={y}
-        x2="100"
+        x2={PLOT_BOUNDS.right}
         y2={y}
         stroke="rgba(255,255,255,0.05)"
-        strokeWidth="0.3"
-        strokeDasharray="0.6 1.2"
+        strokeWidth="0.35"
+        strokeDasharray="1 1.5"
       />
     ))}
   </>
 );
 
-const LineAreaChart: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
-  // gentle climbing line: 220 max scale → svg coords 0..100
-  // values: 18, 22, 28, 34, 40 (rising)
-  const pts = [
-    { x: 8, y: 78 },
-    { x: 30, y: 72 },
-    { x: 52, y: 64 },
-    { x: 74, y: 56 },
-    { x: 96, y: 48 },
-  ];
-  const lineD = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
-  const areaD = `${lineD} L96,90 L8,90 Z`;
-  const totalLength = 240;
+const ChartAxisLabels: React.FC<{
+  yLabels: readonly string[];
+  xLabels: readonly string[];
+  xPositions: readonly number[];
+}> = ({ yLabels, xLabels, xPositions }) => (
+  <>
+    {yLabels.map((label, i) => (
+      <text
+        key={label}
+        x={1.5}
+        y={gridYs[i]! + 2.5}
+        fill="#52525b"
+        fontSize="4.2"
+        fontFamily="ui-monospace, monospace"
+      >
+        {label}
+      </text>
+    ))}
+    {xLabels.map((label, i) => (
+      <text
+        key={label}
+        x={xPositions[i] ?? 0}
+        y={92}
+        fill="#52525b"
+        fontSize="4.2"
+        textAnchor="middle"
+        fontFamily="ui-monospace, monospace"
+      >
+        {label}
+      </text>
+    ))}
+  </>
+);
+
+const PLOT_BOUNDS = { left: 16, right: 98, top: 10, bottom: 72 } as const;
+const SERIES_X = [16, 36.5, 57, 77.5, 98] as const;
+
+const risingSeriesPoints = () => {
+  const ys = [68, 61, 53, 45, 36];
+  return SERIES_X.map((x, i) => ({ x, y: ys[i]! }));
+};
+
+const buildLinePath = (pts: { x: number; y: number }[]) =>
+  pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
+
+type IntegratedChartProps = {
+  reducedMotion: boolean;
+  yLabels: readonly string[];
+  xLabels: readonly string[];
+  heightClass?: string;
+};
+
+/** Linha + área com eixos integrados (mobile e desktop) */
+const IntegratedLineChart: React.FC<IntegratedChartProps> = ({
+  reducedMotion,
+  yLabels,
+  xLabels,
+  heightClass = 'h-28',
+}) => {
+  const chartId = useId().replace(/:/g, '');
+  const pts = risingSeriesPoints();
+  const lineD = buildLinePath(pts);
+  const areaD = `${lineD} L${pts[pts.length - 1]!.x},${PLOT_BOUNDS.bottom} L${pts[0]!.x},${PLOT_BOUNDS.bottom} Z`;
 
   return (
-    <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+    <svg
+      viewBox="0 0 100 100"
+      className={`block w-full ${heightClass}`}
+      preserveAspectRatio="none"
+      aria-hidden
+    >
       <defs>
-        <linearGradient id="lineAreaFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#9D50BB" stopOpacity="0.45" />
+        <linearGradient id={`${chartId}-fill`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#9D50BB" stopOpacity="0.42" />
           <stop offset="100%" stopColor="#9D50BB" stopOpacity="0" />
         </linearGradient>
+        <clipPath id={`${chartId}-clip`}>
+          <rect
+            x={PLOT_BOUNDS.left - 1}
+            y={PLOT_BOUNDS.top}
+            width={PLOT_BOUNDS.right - PLOT_BOUNDS.left + 2}
+            height={PLOT_BOUNDS.bottom - PLOT_BOUNDS.top}
+          />
+        </clipPath>
       </defs>
-      <Gridlines />
-      <motion.path
-        d={areaD}
-        fill="url(#lineAreaFill)"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, delay: 0.5 }}
-      />
-      <motion.path
-        d={lineD}
-        stroke="#A78BFA"
-        strokeWidth="1.2"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeDasharray={totalLength}
-        initial={{ strokeDashoffset: reducedMotion ? 0 : totalLength }}
-        whileInView={{ strokeDashoffset: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.4, ease: 'easeOut' }}
-      />
-      {pts.map((p, i) => (
-        <motion.circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r="0.9"
-          fill="#A78BFA"
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+
+      <ChartAxisLabels yLabels={yLabels} xLabels={xLabels} xPositions={SERIES_X} />
+
+      <g clipPath={`url(#${chartId}-clip)`}>
+        <ChartGrid />
+        <motion.path
+          d={areaD}
+          fill={`url(#${chartId}-fill)`}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 1 + i * 0.08 }}
+          transition={{ duration: reducedMotion ? 0 : 0.55, delay: 0.1 }}
         />
-      ))}
+        <motion.path
+          d={lineD}
+          stroke="#A78BFA"
+          strokeWidth="1.35"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: reducedMotion ? 0 : 0.65, delay: 0.18 }}
+        />
+        {pts.map((p, i) => (
+          <motion.circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r="1.1"
+            fill="#A78BFA"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.25, delay: 0.28 + i * 0.05 }}
+          />
+        ))}
+      </g>
     </svg>
   );
 };
 
-const BarsChart: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
-  // heights as % of svg height (90 visible)
-  const heights = [50, 60, 72, 80, 88];
+/** Barras alinhadas aos mesmos pontos do eixo X */
+const IntegratedBarsChart: React.FC<IntegratedChartProps> = ({
+  reducedMotion,
+  yLabels,
+  xLabels,
+  heightClass = 'h-28',
+}) => {
+  const chartId = useId().replace(/:/g, '');
+  const barHeights = [34, 42, 50, 56, 62];
+  const barWidth = 11;
+
   return (
-    <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+    <svg
+      viewBox="0 0 100 100"
+      className={`block w-full ${heightClass}`}
+      preserveAspectRatio="none"
+      aria-hidden
+    >
       <defs>
-        <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${chartId}-bar`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#A78BFA" />
           <stop offset="100%" stopColor="#6D28D9" />
         </linearGradient>
-      </defs>
-      <Gridlines />
-      {heights.map((h, i) => {
-        const w = 12;
-        const gap = (100 - w * heights.length) / (heights.length + 1);
-        const x = gap + i * (w + gap);
-        const y = 90 - h;
-        return (
-          <motion.rect
-            key={i}
-            x={x}
-            y={y}
-            width={w}
-            height={h}
-            rx={1.2}
-            fill="url(#barFill)"
-            initial={{ scaleY: reducedMotion ? 1 : 0, transformOrigin: '50% 90%' }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.3 + i * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
-            style={{ transformOrigin: `${x + w / 2}px 90px` }}
+        <clipPath id={`${chartId}-clip`}>
+          <rect
+            x={PLOT_BOUNDS.left - 1}
+            y={PLOT_BOUNDS.top}
+            width={PLOT_BOUNDS.right - PLOT_BOUNDS.left + 2}
+            height={PLOT_BOUNDS.bottom - PLOT_BOUNDS.top}
           />
-        );
-      })}
+        </clipPath>
+      </defs>
+
+      <ChartAxisLabels yLabels={yLabels} xLabels={xLabels} xPositions={SERIES_X} />
+
+      <g clipPath={`url(#${chartId}-clip)`}>
+        <ChartGrid />
+        {barHeights.map((h, i) => {
+          const cx = SERIES_X[i]!;
+          const x = cx - barWidth / 2;
+          const y = PLOT_BOUNDS.bottom - h;
+          return (
+            <motion.rect
+              key={i}
+              x={x}
+              y={y}
+              width={barWidth}
+              height={h}
+              rx={1.2}
+              fill={`url(#${chartId}-bar)`}
+              initial={{ opacity: 0, scaleY: reducedMotion ? 1 : 0.2 }}
+              whileInView={{ opacity: 1, scaleY: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: 0.12 + i * 0.07, ease: [0.22, 0.61, 0.36, 1] }}
+              style={{ transformOrigin: `${cx}px ${PLOT_BOUNDS.bottom}px` }}
+            />
+          );
+        })}
+      </g>
     </svg>
   );
 };
 
 const PieFunnel: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
+  const chartId = useId().replace(/:/g, '');
   const segs = [
     { points: '10,18 90,18 78,34 22,34', opacity: 0.85 },
     { points: '22,34 78,34 66,50 34,50', opacity: 0.65 },
@@ -201,23 +276,36 @@ const PieFunnel: React.FC<{ reducedMotion: boolean }> = ({ reducedMotion }) => {
     { points: '44,66 56,66 52,82 48,82', opacity: 0.3 },
   ];
   return (
-    <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
+    <svg viewBox="0 0 100 100" className="h-full w-full" preserveAspectRatio="xMidYMid meet" aria-hidden>
       <defs>
-        <linearGradient id="funnelFill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${chartId}-funnel`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#A78BFA" />
           <stop offset="100%" stopColor="#22D3EE" />
         </linearGradient>
       </defs>
+      <motion.circle
+        cx="82"
+        cy="22"
+        r="11"
+        fill="#22D3EE"
+        fillOpacity="0.35"
+        stroke="#22D3EE"
+        strokeOpacity="0.6"
+        strokeWidth="0.6"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      />
       {segs.map((s, i) => (
         <motion.polygon
           key={i}
           points={s.points}
-          fill="url(#funnelFill)"
-          opacity={s.opacity}
-          initial={{ opacity: reducedMotion ? s.opacity : 0, y: -4 }}
-          whileInView={{ opacity: s.opacity, y: 0 }}
+          fill={`url(#${chartId}-funnel)`}
+          initial={{ opacity: reducedMotion ? s.opacity : 0 }}
+          whileInView={{ opacity: s.opacity }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 + i * 0.12, ease: 'easeOut' }}
+          transition={{ duration: 0.45, delay: 0.15 + i * 0.1, ease: 'easeOut' }}
         />
       ))}
       {[18, 34, 50, 66, 82].map((y) => (
@@ -301,10 +389,12 @@ const PlatformMobilePreview: React.FC<{
     </div>
 
     <div className="bg-[#111116] p-4">
-      <h4 className="text-base font-bold text-white">Dashboard</h4>
-      <p className="mt-1 text-xs leading-relaxed text-gray-500">{P.moduleCaption}</p>
+      <div className="md:text-left">
+        <h4 className="text-base font-bold text-white">Dashboard</h4>
+        <p className="mt-1 text-xs leading-relaxed text-gray-500">{P.moduleCaption}</p>
+      </div>
 
-      <div className="mb-3 mt-5 flex items-center gap-2">
+      <div className="mb-3 mt-5 flex items-center gap-2 md:justify-start justify-center">
         <Sparkles className="h-3.5 w-3.5 text-[#00D2FF]" />
         <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Insights IA</p>
       </div>
@@ -331,15 +421,11 @@ const PlatformMobilePreview: React.FC<{
       </div>
 
       <ChartFrame title="Performance semanal" className="mt-5">
-        <div className="flex h-28">
-          <YAxisLabels labels={P.axis.y} />
-          <div className="flex flex-1 flex-col">
-            <div className="flex-1">
-              <LineAreaChart reducedMotion={reduced} />
-            </div>
-            <XAxisLabels labels={P.axis.x} />
-          </div>
-        </div>
+        <IntegratedLineChart
+          reducedMotion={reduced}
+          yLabels={P.axis.y}
+          xLabels={P.axis.x}
+        />
       </ChartFrame>
 
       <p className="mt-4 text-center text-[9px] text-gray-600">
@@ -377,12 +463,12 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
       />
 
       <Container className="relative">
-        <div className="mb-8 text-center md:mb-16">
+        <div className="section-intro-mobile mb-8 text-center md:mb-16 md:text-left">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: titleDoneDelay }}
-            className="text-xs font-bold text-[#00D2FF] uppercase tracking-[0.4em] mb-4 block"
+            className="mb-4 block text-xs font-bold uppercase tracking-[0.4em] text-[#00D2FF]"
           >
             {intelligence.badge}
           </motion.span>
@@ -391,7 +477,7 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
             startOnInView
             startDelayMs={headingDelay * 1000}
             charIntervalMs={headingInterval}
-            className="mb-5 text-3xl font-bold text-white sm:text-4xl md:mb-6 md:text-6xl"
+            className="mb-5 text-center text-3xl font-bold text-white sm:text-4xl md:mb-6 md:text-left md:text-6xl"
             segments={[
               { text: intelligence.title },
               { text: intelligence.titleHighlight, className: GRADIENTS.text },
@@ -402,7 +488,7 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: titleDoneDelay + 0.12 }}
-            className="mx-auto max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg"
+          className="mx-auto max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg text-center md:text-left"
           >
             {intelligence.description}
           </motion.p>
@@ -544,41 +630,35 @@ const Intelligence: React.FC<IntelligenceProps> = ({ embedded = false }) => {
               </div>
 
               {/* Charts 2x2 */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                <ChartFrame title="Line + Area animado">
-                  <div className="flex h-32">
-                    <YAxisLabels labels={P.axis.y} />
-                    <div className="flex-1 flex flex-col">
-                      <div className="flex-1">
-                        <LineAreaChart reducedMotion={reduced} />
-                      </div>
-                      <XAxisLabels labels={P.axis.x} />
-                    </div>
-                  </div>
+              <div className="grid grid-cols-1 gap-3 overflow-hidden lg:grid-cols-2">
+                <ChartFrame title="Performance semanal">
+                  <IntegratedLineChart
+                    reducedMotion={reduced}
+                    yLabels={P.axis.y}
+                    xLabels={P.axis.x}
+                    heightClass="h-32"
+                  />
                 </ChartFrame>
 
-                <ChartFrame title="Barras crescendo">
-                  <div className="flex h-32">
-                    <YAxisLabels labels={P.axis.y} />
-                    <div className="flex-1 flex flex-col">
-                      <div className="flex-1">
-                        <BarsChart reducedMotion={reduced} />
-                      </div>
-                      <XAxisLabels labels={P.axis.x} />
-                    </div>
-                  </div>
+                <ChartFrame title="Leads por dia">
+                  <IntegratedBarsChart
+                    reducedMotion={reduced}
+                    yLabels={P.axis.y}
+                    xLabels={P.axis.x}
+                    heightClass="h-32"
+                  />
                 </ChartFrame>
 
-                <ChartFrame title="Pie + Funnel">
-                  <div className="h-32 flex items-center justify-center">
-                    <div className="w-full h-full max-w-[200px]">
+                <ChartFrame title="Funil de conversão">
+                  <div className="flex h-32 items-center justify-center overflow-hidden">
+                    <div className="h-full w-full max-w-[220px]">
                       <PieFunnel reducedMotion={reduced} />
                     </div>
                   </div>
                 </ChartFrame>
 
-                <ChartFrame title="Radar + Heatmap D3">
-                  <div className="h-32">
+                <ChartFrame title="Mapa de atividade">
+                  <div className="h-32 overflow-hidden">
                     <RadarHeatmap />
                   </div>
                 </ChartFrame>

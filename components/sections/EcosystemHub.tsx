@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   Megaphone,
@@ -52,6 +52,11 @@ export type EcosystemIncludedData = {
 
 const HUB_CENTER = { x: 50, y: 50 };
 const STAGE_SHIFT_X = '-4%';
+const STAGE_PX = 660;
+/** Escala mobile: maior que w/660 para legibilidade; scroll horizontal se passar da tela */
+const MOBILE_SCALE_MIN = 0.64;
+const MOBILE_SCALE_MAX = 0.82;
+const MOBILE_SCALE_DIVISOR = 500;
 const NODE_BOUNDS = { minX: 10, maxX: 90, minY: 8, maxY: 88 };
 
 /** Trilho orbital externo — “bus” do circuito (viewBox 0–100) */
@@ -393,73 +398,14 @@ const EcosystemHub: React.FC<EcosystemHubProps> = ({ data }) => {
           </div>
         </motion.header>
 
-        <div className="relative">
-          {/* Desktop hub diagram */}
-          <div className="hidden lg:block relative min-h-[660px] xl:min-h-[700px] rounded-[32px] border border-white/[0.06] bg-gradient-to-br from-[#0a0a12]/90 via-[#06060c]/60 to-[#0a0814]/80 overflow-visible">
-            <div className="absolute inset-0 flex items-center justify-center px-8 py-10">
-              <div
-                className="relative w-full max-w-[620px] xl:max-w-[660px] aspect-square mx-auto"
-                style={{ transform: `translateX(${STAGE_SHIFT_X})` }}
-              >
-                <div className="absolute inset-0 rounded-[28px] overflow-hidden">
-                  <HubBackdrop reducedMotion={!!reducedMotion} />
-                </div>
-                <ConnectorSvg
-                  hub={HUB_CENTER}
-                  frame={HUB_FRAME}
-                  nodes={normalizedNodes}
-                  reducedMotion={!!reducedMotion}
-                />
-                <div className="absolute inset-0 z-[25] flex items-center justify-center pointer-events-none">
-                  <HubCore hub={data.hub} reducedMotion={!!reducedMotion} />
-                </div>
-                {normalizedNodes.map((node, idx) => (
-                  <OrbitalNode
-                    key={node.id}
-                    node={node}
-                    index={idx}
-                    reducedMotion={!!reducedMotion}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="relative min-w-0">
+          <HubDiagramStage
+            hub={data.hub}
+            nodes={normalizedNodes}
+            reducedMotion={!!reducedMotion}
+          />
 
-          {/* Mobile / tablet — layout dedicado */}
-          <div className="lg:hidden mt-6 md:mt-8 space-y-5">
-            <div className="relative overflow-hidden rounded-[28px] border border-white/[0.1] bg-gradient-to-b from-[#0d1118]/95 via-[#09090f] to-[#060608] px-5 pt-8 pb-7 sm:px-7 sm:pt-10 sm:pb-9">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_38%,rgba(0,210,255,0.14),transparent_55%),radial-gradient(ellipse_at_80%_90%,rgba(157,80,187,0.08),transparent_45%)]"
-              />
-              <div className="relative flex flex-col items-center text-center">
-                <HubCore hub={data.hub} reducedMotion={!!reducedMotion} mobileHero />
-                <p className="mt-6 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[#9DE9FF]">
-                  Núcleo {data.hub.label} TechT
-                </p>
-                <p className="mt-2.5 text-sm text-gray-400 leading-relaxed max-w-[18rem]">
-                  {data.hub.description}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <p className="px-1 text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-gray-500">
-                Módulos do ecossistema
-              </p>
-              <div className="flex flex-col gap-3">
-                {data.nodes.map((node, idx) => (
-                  <OrbitalNode
-                    key={node.id}
-                    node={node}
-                    index={idx}
-                    reducedMotion={!!reducedMotion}
-                    stacked
-                  />
-                ))}
-              </div>
-            </div>
-
+          <div className="mt-4 lg:hidden">
             <Legend items={data.legend} stacked />
           </div>
         </div>
@@ -484,6 +430,106 @@ const EcosystemHub: React.FC<EcosystemHubProps> = ({ data }) => {
           {data.footer.text}
         </p>
       </motion.footer>
+    </div>
+  );
+};
+
+type HubDiagramStageProps = {
+  hub: EcosystemIncludedData['hub'];
+  nodes: EcosystemNode[];
+  reducedMotion: boolean;
+};
+
+/** Mesmo diagrama hub-and-spoke do desktop, escalado para caber no mobile */
+const HubDiagramStage: React.FC<HubDiagramStageProps> = ({ hub, nodes, reducedMotion }) => {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const w = el.clientWidth;
+      if (w >= STAGE_PX) {
+        setScale(1);
+        return;
+      }
+      const target = Math.min(
+        MOBILE_SCALE_MAX,
+        Math.max(MOBILE_SCALE_MIN, (w + 28) / MOBILE_SCALE_DIVISOR),
+      );
+      setScale(target);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const scaledHeight = STAGE_PX * scale;
+  const isCompact = scale < 1;
+
+  return (
+    <div
+      ref={wrapRef}
+      className={`relative w-full rounded-[32px] border border-white/[0.06] bg-gradient-to-br from-[#0a0a12]/90 via-[#06060c]/60 to-[#0a0814]/80 lg:min-h-[660px] xl:min-h-[700px] ${
+        isCompact ? 'overflow-x-auto overscroll-x-contain touch-pan-x' : 'overflow-hidden lg:overflow-visible'
+      }`}
+    >
+      <div
+        className={`flex w-full py-2 lg:min-h-[660px] lg:items-center lg:justify-center lg:px-8 lg:py-10 xl:min-h-[700px] ${
+          isCompact ? 'min-w-max justify-center px-1' : 'justify-center'
+        }`}
+      >
+        <div
+          className="relative shrink-0 overflow-hidden lg:overflow-visible"
+          style={{
+            width: isCompact ? scaledHeight : STAGE_PX,
+            height: isCompact ? scaledHeight : STAGE_PX,
+          }}
+        >
+          <div
+            className="relative"
+            style={{
+              width: STAGE_PX,
+              height: STAGE_PX,
+              transform: isCompact
+                ? `scale(${scale})`
+                : `translateX(${STAGE_SHIFT_X})`,
+              transformOrigin: isCompact ? 'top left' : 'top center',
+            }}
+          >
+          <div className="absolute inset-0 overflow-hidden rounded-[28px]">
+            <HubBackdrop reducedMotion={reducedMotion} />
+          </div>
+          <ConnectorSvg
+            hub={HUB_CENTER}
+            frame={HUB_FRAME}
+            nodes={nodes}
+            reducedMotion={reducedMotion}
+          />
+          <div className="pointer-events-none absolute inset-0 z-[25] flex items-center justify-center">
+            <HubCore hub={hub} reducedMotion={reducedMotion} />
+          </div>
+          {nodes.map((node, idx) => (
+            <OrbitalNode
+              key={node.id}
+              node={node}
+              index={idx}
+              reducedMotion={reducedMotion}
+              touchLayout={isCompact}
+            />
+          ))}
+          </div>
+        </div>
+      </div>
+      {isCompact ? (
+        <p className="pb-2 text-center text-[0.62rem] uppercase tracking-[0.22em] text-gray-600 lg:hidden">
+          Deslize para ver todo o ecossistema
+        </p>
+      ) : null}
     </div>
   );
 };
@@ -559,6 +605,7 @@ type OrbitalNodeProps = {
   index: number;
   reducedMotion: boolean;
   stacked?: boolean;
+  touchLayout?: boolean;
 };
 
 const OrbitalNode: React.FC<OrbitalNodeProps> = ({
@@ -566,6 +613,7 @@ const OrbitalNode: React.FC<OrbitalNodeProps> = ({
   index,
   reducedMotion,
   stacked,
+  touchLayout,
 }) => {
   const Icon = nodeIcons[node.id] ?? Target;
   const alignRight = node.anchor.x > HUB_CENTER.x + 6;
@@ -589,7 +637,7 @@ const OrbitalNode: React.FC<OrbitalNodeProps> = ({
 
   const cardClassName = stacked
     ? 'group relative w-full flex gap-3.5 p-4 sm:p-[1.1rem] rounded-2xl border border-white/[0.1] bg-[#0a0a0f]/92 hover:border-[#3B82F6]/25 hover:shadow-[0_0_24px_rgba(59,130,246,0.1)] transition-[box-shadow,border-color] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
-    : `group relative w-[10.9rem] xl:w-[11.8rem] p-3.5 rounded-2xl border border-white/[0.1] bg-[#0a0a0f]/92 backdrop-blur-sm transition-[box-shadow,border-color,background-color] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-[#3B82F6]/30 hover:bg-[#0b0b12]/95 hover:shadow-[0_0_28px_rgba(59,130,246,0.14),0_10px_36px_rgba(0,0,0,0.38)] ${
+    : `group relative ${touchLayout ? 'w-[11.4rem]' : 'w-[10.9rem] xl:w-[11.8rem]'} p-3.5 rounded-2xl border border-white/[0.1] bg-[#0a0a0f]/92 backdrop-blur-sm transition-[box-shadow,border-color,background-color] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-[#3B82F6]/30 hover:bg-[#0b0b12]/95 hover:shadow-[0_0_28px_rgba(59,130,246,0.14),0_10px_36px_rgba(0,0,0,0.38)] ${
         alignCenter ? 'text-center' : alignRight ? 'text-right' : 'text-left'
       }`;
 
@@ -609,14 +657,18 @@ const OrbitalNode: React.FC<OrbitalNodeProps> = ({
         <Icon className="w-[14px] h-[14px]" strokeWidth={1.65} />
       </span>
       <div className={alignCenter && !stacked ? 'flex flex-col items-center' : ''}>
-        <h4 className="text-[0.88rem] sm:text-[0.92rem] xl:text-[0.84rem] font-semibold text-white tracking-[-0.01em] leading-tight">
+        <h4 className={`font-semibold text-white tracking-[-0.01em] leading-tight ${
+          touchLayout ? 'text-[0.9rem]' : 'text-[0.88rem] sm:text-[0.92rem] xl:text-[0.84rem]'
+        }`}>
           {node.title}
         </h4>
         <p
-          className={`mt-1 text-[0.8rem] sm:text-[0.82rem] xl:text-[0.75rem] text-gray-400 leading-relaxed transition-all duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            stacked
-              ? 'group-hover:text-gray-300'
-              : 'max-h-[3.2rem] overflow-hidden group-hover:max-h-[6.4rem] group-hover:text-gray-300'
+          className={`mt-1 text-gray-400 leading-snug transition-all duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            touchLayout
+              ? 'text-[0.8rem] text-gray-300'
+              : stacked
+                ? 'text-[0.8rem] sm:text-[0.82rem] group-hover:text-gray-300'
+                : 'max-h-[3.2rem] overflow-hidden text-[0.8rem] sm:text-[0.82rem] xl:text-[0.75rem] leading-relaxed group-hover:max-h-[6.4rem] group-hover:text-gray-300'
           }`}
         >
           {node.description}

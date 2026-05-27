@@ -56,7 +56,7 @@ export const OFFERINGS_PT = {
     titleHighlight: "Decisões mais inteligentes.",
     titleSuffix: "",
     intro:
-      "Um ecossistema completo que integra dados, processos e pessoas para impulsionar crescimento com previsibilidade e clareza.",
+      "Um ecossistema que integra dados, processos e pessoas para crescer com mais previsibilidade e clareza no dia a dia.",
     hub: {
       label: "IA",
       description:
@@ -142,7 +142,7 @@ export const OFFERINGS_PT = {
     titleStart: "Mídia, produção e conteúdo com ",
     titleHighlight: "padrão premium",
     subtitle:
-      "Conteúdos criados para elevar a percepção de valor da sua marca, posicionar com clareza e impulsionar crescimento digital — com direção criativa e produção cinematográfica.",
+      "Conteúdo produzido para valorizar sua marca, posicionar com clareza e apoiar o crescimento digital, com direção criativa e produção cinematográfica.",
     watchLabel: "Assistir",
     closeLabel: "Fechar vídeo",
     emptyLabel: "Em breve novos conteúdos nesta categoria.",
@@ -230,7 +230,7 @@ export const OFFERINGS_PT = {
     titleStart: "Atendimento inteligente e ",
     titleHighlight: "automações que escalam empresas",
     subtitle:
-      "Transforme processos manuais em operações inteligentes, reduza perdas e aumente a capacidade de crescimento da sua empresa.",
+      "Menos tarefa manual, menos lead perdido e mais capacidade de vender. Automação e IA no WhatsApp, no CRM e na rotina comercial.",
     primaryCards: [
       {
         title: "Atendimento inteligente 24h",
@@ -257,10 +257,10 @@ export const OFFERINGS_PT = {
     ],
     visual: {
       assistantName: "Assistente TechT",
-      statusLabel: "Online",
+      statusLabel: "online · agente de IA no WhatsApp",
       customerMessage: "Olá! Quero saber mais sobre como vocês trabalham.",
       assistantMessage:
-        "Posso te agendar uma conversa rápida com o time ainda esta semana. Qual horário funciona melhor para você?",
+        "Posso te agendar uma conversa rápida com o time ainda nesta semana. Qual horário funciona melhor para você?",
       options: ["Manhã", "Tarde", "Fim do dia"],
       typingLabel: "digitando",
       badges: [
@@ -271,7 +271,7 @@ export const OFFERINGS_PT = {
   },
 
   disclaimer:
-    "Investimento e escopo saem do diagnóstico: entendemos seu momento, ticket e operação e montamos a proposta com prioridades reais, execução forte e evolução contínua.",
+    "Investimento e escopo saem do diagnóstico. Entendemos seu momento, ticket e operação antes de montar a proposta, com prioridades reais e execução contínua.",
 
   cta: {
     primaryLabel: "Quero uma análise gratuita do marketing da minha empresa",
@@ -320,7 +320,7 @@ export const OFFERINGS_EN: typeof OFFERINGS_PT = {
     titleHighlight: 'Smarter decisions.',
     titleSuffix: '',
     intro:
-      'A complete ecosystem that integrates data, processes and people to drive growth with predictability and clarity.',
+      'An ecosystem that connects data, processes and people so you can grow with more clarity and predictability every day.',
     hub: {
       label: 'AI',
       description:
@@ -405,7 +405,7 @@ export const OFFERINGS_EN: typeof OFFERINGS_PT = {
     titleStart: 'Media, production and content with ',
     titleHighlight: 'premium standards',
     subtitle:
-      'Content crafted to raise your brand perception, clarify positioning and drive digital growth — with creative direction and cinematic production.',
+      'Content made to elevate your brand, clarify positioning and support digital growth, with creative direction and cinematic production.',
     watchLabel: 'Watch',
     closeLabel: 'Close video',
     emptyLabel: 'New content coming soon to this category.',
@@ -492,7 +492,7 @@ export const OFFERINGS_EN: typeof OFFERINGS_PT = {
     titleStart: 'Smart service and ',
     titleHighlight: 'automations that scale companies',
     subtitle:
-      "Turn manual processes into intelligent operations, reduce losses and grow your company's capacity to scale.",
+      'Less manual work, fewer lost leads and more room to sell. Automation and AI across WhatsApp, CRM and your sales routine.',
     primaryCards: [
       {
         title: '24h intelligent service',
@@ -519,7 +519,7 @@ export const OFFERINGS_EN: typeof OFFERINGS_PT = {
     ],
     visual: {
       assistantName: 'TechT Assistant',
-      statusLabel: 'Online',
+      statusLabel: 'online · AI agent on WhatsApp',
       customerMessage: 'Hi! I want to know more about how you work.',
       assistantMessage:
         'I can book a quick chat with the team this week. What time works best for you?',
@@ -532,7 +532,7 @@ export const OFFERINGS_EN: typeof OFFERINGS_PT = {
     },
   },
   disclaimer:
-    'Investment and scope come from diagnosis: we assess your moment, ticket and operation to build a proposal with real priorities, strong execution and continuous evolution.',
+    'Investment and scope come from diagnosis. We learn your moment, ticket and operation before building a proposal with real priorities and steady execution.',
   cta: {
     primaryLabel: 'I want a free marketing analysis for my company',
     waMessage:

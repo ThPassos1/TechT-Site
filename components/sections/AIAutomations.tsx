@@ -10,12 +10,20 @@ import {
   Zap,
   Sparkles,
   Check,
-  CornerDownLeft,
+  ChevronLeft,
+  Phone,
+  Video,
+  Smile,
+  Paperclip,
+  Mic,
+  CheckCheck,
   type LucideIcon,
 } from 'lucide-react';
 import Container from '../ui/Container';
 import { useSiteConfig } from '../../hooks/useSiteConfig';
 import TypewriterHeadline from '../effects/TypewriterHeadline';
+import assistantAvatar from '../../assets/images/IA TechT.png';
+import WhatsAppIcon from '../ui/WhatsAppIcon';
 
 type CardItem = { title: string; description?: string };
 
@@ -65,7 +73,7 @@ const AIAutomations: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6, ease: easeOut }}
-          className="max-w-3xl mb-14 md:mb-20"
+          className="max-w-3xl mb-14 md:mb-20 section-intro-mobile md:text-left"
         >
           <div className="inline-flex items-center gap-3 mb-7">
             <span className="w-8 h-px bg-gradient-to-r from-transparent to-[#00D2FF]/70" />
@@ -78,7 +86,7 @@ const AIAutomations: React.FC = () => {
             startOnInView
             startDelayMs={reducedMotion ? 0 : 320}
             charIntervalMs={reducedMotion ? 0 : 70}
-            className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-[-0.02em] mb-7"
+            className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-[-0.02em] mb-7 text-center md:text-left"
             segments={[
               { text: data.titleStart },
               {
@@ -205,95 +213,125 @@ type CinematicVisualProps = { visual: VisualData; reducedMotion: boolean };
 const CinematicVisual: React.FC<CinematicVisualProps> = ({ visual, reducedMotion }) => {
   const dotAnim = reducedMotion
     ? undefined
-    : { y: [0, -3, 0], opacity: [0.35, 1, 0.35] };
+    : { y: [0, -2, 0], opacity: [0.35, 1, 0.35] };
 
   return (
-    <div className="relative">
-      <div className="absolute -inset-6 rounded-[36px] bg-gradient-to-br from-[#00D2FF]/10 via-transparent to-[#9D50BB]/12 blur-3xl opacity-70 pointer-events-none" />
+    <div className="relative mx-auto w-full max-w-[390px] lg:mx-0">
+      <div className="pointer-events-none absolute -inset-4 rounded-[40px] bg-[#25D366]/10 blur-3xl opacity-60" />
 
-      <div className="relative rounded-3xl border border-white/10 overflow-hidden bg-gradient-to-b from-[#0a0a0d] to-[#050507] shadow-[0_30px_80px_-20px_rgba(0,210,255,0.10),0_20px_60px_-10px_rgba(157,80,187,0.10)]">
-        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.015]">
-          <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-white/12" />
-            <span className="w-2.5 h-2.5 rounded-full bg-white/12" />
-            <span className="w-2.5 h-2.5 rounded-full bg-white/12" />
+      <div className="relative overflow-hidden rounded-[28px] border border-[#2a3942]/80 shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
+        {/* Header estilo WhatsApp */}
+        <div className="flex items-center gap-2.5 bg-[#202c33] px-2.5 py-2.5">
+          <button
+            type="button"
+            aria-hidden
+            className="p-1.5 text-[#aebac1] hover:text-[#e9edef]"
+          >
+            <ChevronLeft className="h-5 w-5" strokeWidth={2} />
+          </button>
+          <div className="relative shrink-0">
+            <img
+              src={assistantAvatar}
+              alt=""
+              className="h-10 w-10 rounded-full border border-[#2a3942] object-cover object-top"
+            />
+            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-[#202c33] bg-[#25D366]" />
           </div>
-          <div className="flex items-center gap-2.5 ml-2">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#00D2FF] to-[#9D50BB] flex items-center justify-center shadow-[0_0_14px_rgba(0,210,255,0.4)]">
-              <Sparkles className="w-3.5 h-3.5 text-black" strokeWidth={2.4} />
-            </div>
-            <div className="leading-tight">
-              <p className="text-[0.82rem] font-semibold text-white tracking-[-0.005em]">
-                {visual.assistantName}
-              </p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="relative flex w-1.5 h-1.5">
-                  {!reducedMotion ? (
-                    <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-60" />
-                  ) : null}
-                  <span className="relative w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                </span>
-                <span className="text-[0.66rem] text-gray-400 tracking-wide">
-                  {visual.statusLabel}
-                </span>
-              </div>
-            </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[15px] font-medium leading-tight text-[#e9edef]">
+              {visual.assistantName}
+            </p>
+            <p className="truncate text-xs text-[#8696a0]">{visual.statusLabel}</p>
+          </div>
+          <div className="flex shrink-0 items-center gap-3 pr-1 text-[#aebac1]">
+            <Video className="h-[18px] w-[18px]" strokeWidth={1.8} />
+            <Phone className="h-[17px] w-[17px]" strokeWidth={1.8} />
           </div>
         </div>
 
-        <div className="px-5 md:px-6 py-6 md:py-7 space-y-4 min-h-[360px]">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.3, ease: easeOut }}
-            className="flex justify-start"
-          >
-            <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-tl-md bg-white/[0.04] border border-white/[0.06]">
-              <p className="text-[0.86rem] text-gray-200 leading-relaxed">
-                {visual.customerMessage}
-              </p>
-            </div>
-          </motion.div>
+        {/* Área de conversa */}
+        <div
+          className="relative min-h-[380px] space-y-3 px-3 py-4"
+          style={{
+            backgroundColor: '#0b141a',
+            backgroundImage:
+              'radial-gradient(circle at 20% 20%, rgba(37,211,102,0.03), transparent 35%), radial-gradient(circle at 80% 70%, rgba(0,92,75,0.05), transparent 40%)',
+          }}
+        >
+          <div className="mb-1 flex items-center justify-center gap-1.5">
+            <span className="rounded-full bg-[#182229] px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-[#8696a0]">
+              Hoje
+            </span>
+          </div>
 
+          {/* Cliente — bolha verde à direita */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.9, ease: easeOut }}
+            transition={{ duration: 0.45, delay: 0.25, ease: easeOut }}
             className="flex justify-end"
           >
-            <div className="max-w-[88%]">
-              <div className="px-4 py-3 rounded-2xl rounded-tr-md bg-gradient-to-br from-[#00D2FF]/[0.10] to-[#9D50BB]/[0.10] border border-[#00D2FF]/20 shadow-[0_0_24px_rgba(0,210,255,0.08)]">
-                <p className="text-[0.88rem] text-white leading-relaxed mb-3">
-                  {visual.assistantMessage}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {visual.options.map((opt) => (
-                    <span
-                      key={opt}
-                      className="px-2.5 py-1 rounded-full text-[0.72rem] font-medium text-white/90 bg-white/[0.05] border border-white/10"
-                    >
-                      {opt}
-                    </span>
-                  ))}
-                </div>
+            <div className="max-w-[86%] rounded-lg rounded-tr-none bg-[#005c4b] px-3 py-2 shadow-[0_1px_0.5px_rgba(0,0,0,0.13)]">
+              <p className="text-[14px] leading-[1.45] text-[#e9edef]">{visual.customerMessage}</p>
+              <div className="mt-1 flex items-end justify-end gap-1">
+                <span className="text-[11px] leading-none text-[#ffffff99]">14:32</span>
+                <CheckCheck className="h-4 w-4 text-[#53bdeb]" strokeWidth={2} />
               </div>
             </div>
           </motion.div>
 
+          {/* Assistente — bolha cinza à esquerda */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.85, ease: easeOut }}
+            className="flex items-end gap-2"
+          >
+            <img
+              src={assistantAvatar}
+              alt=""
+              aria-hidden
+              className="mb-1 h-7 w-7 shrink-0 rounded-full border border-[#2a3942] object-cover object-top"
+            />
+            <div className="max-w-[86%] rounded-lg rounded-tl-none bg-[#202c33] px-3 py-2 shadow-[0_1px_0.5px_rgba(0,0,0,0.13)]">
+              <p className="text-[14px] leading-[1.45] text-[#e9edef]">{visual.assistantMessage}</p>
+              <div className="mt-2.5 flex flex-col gap-1.5">
+                {visual.options.map((opt) => (
+                  <span
+                    key={opt}
+                    className="rounded-lg border border-[#00a884]/35 bg-[#111b21] px-3 py-2 text-center text-[13px] font-medium text-[#00a884]"
+                  >
+                    {opt}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-1 flex justify-end">
+                <span className="text-[11px] leading-none text-[#8696a0]">14:33</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Digitando */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 1.5 }}
-            className="flex items-center gap-2"
+            transition={{ duration: 0.4, delay: 1.45 }}
+            className="flex items-end gap-2"
           >
-            <div className="flex items-center gap-1 px-3 py-2 rounded-full bg-white/[0.03] border border-white/[0.06]">
+            <img
+              src={assistantAvatar}
+              alt=""
+              aria-hidden
+              className="mb-1 h-7 w-7 shrink-0 rounded-full border border-[#2a3942] object-cover object-top"
+            />
+            <div className="inline-flex items-center gap-1 rounded-2xl rounded-bl-sm bg-[#202c33] px-4 py-3">
               {[0, 0.15, 0.3].map((delay) => (
                 <motion.span
                   key={delay}
-                  className="w-1.5 h-1.5 rounded-full bg-[#00D2FF]"
+                  className="h-2 w-2 rounded-full bg-[#8696a0]"
                   animate={dotAnim}
                   transition={
                     reducedMotion
@@ -303,15 +341,33 @@ const CinematicVisual: React.FC<CinematicVisualProps> = ({ visual, reducedMotion
                 />
               ))}
             </div>
-            <span className="text-[0.7rem] text-gray-500">{visual.typingLabel}</span>
+            <span className="mb-1 text-[11px] text-[#8696a0]">{visual.typingLabel}…</span>
           </motion.div>
         </div>
 
-        <div className="flex items-center gap-3 px-5 md:px-6 py-3.5 border-t border-white/[0.06] bg-white/[0.012]">
-          <div className="flex-1 h-7 rounded-full bg-white/[0.04] border border-white/[0.06]" />
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#00D2FF] to-[#9D50BB] flex items-center justify-center shadow-[0_0_12px_rgba(0,210,255,0.35)]">
-            <CornerDownLeft className="w-3.5 h-3.5 text-black" strokeWidth={2.4} />
+        {/* Barra inferior estilo WhatsApp */}
+        <div className="flex items-end gap-2 bg-[#202c33] px-2 py-2">
+          <button type="button" aria-hidden className="p-2 text-[#8696a0]">
+            <Smile className="h-6 w-6" strokeWidth={1.6} />
+          </button>
+          <div className="flex min-h-[42px] flex-1 items-center gap-2 rounded-full bg-[#2a3942] px-4 py-2">
+            <Paperclip className="h-5 w-5 shrink-0 text-[#8696a0]" strokeWidth={1.8} />
+            <span className="truncate text-[15px] text-[#8696a0]">Mensagem</span>
           </div>
+          <button
+            type="button"
+            aria-hidden
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#00a884] text-[#111b21]"
+          >
+            <Mic className="h-5 w-5" strokeWidth={2} />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center gap-1.5 border-t border-[#2a3942] bg-[#111b21] px-3 py-2">
+          <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />
+          <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#8696a0]">
+            Agente de IA no WhatsApp
+          </span>
         </div>
       </div>
 
@@ -320,12 +376,12 @@ const CinematicVisual: React.FC<CinematicVisualProps> = ({ visual, reducedMotion
         whileInView={{ opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.7, ease: easeOut }}
-        className="hidden md:flex absolute -left-5 lg:-left-10 top-[26%] items-center gap-2 px-3.5 py-2 rounded-full bg-[#0c0c10]/95 border border-white/10 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        className="absolute -left-2 top-[24%] hidden items-center gap-2 rounded-full border border-[#25D366]/25 bg-[#111b21]/95 px-3 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur-md md:flex lg:-left-8"
       >
-        <span className="w-5 h-5 rounded-full bg-emerald-400/15 border border-emerald-400/40 flex items-center justify-center">
-          <Check className="w-3 h-3 text-emerald-400" strokeWidth={3} />
+        <span className="flex h-5 w-5 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-400/15">
+          <Check className="h-3 w-3 text-emerald-400" strokeWidth={3} />
         </span>
-        <span className="text-[0.72rem] font-medium text-gray-200 whitespace-nowrap">
+        <span className="whitespace-nowrap text-[0.72rem] font-medium text-gray-200">
           {visual.badges[0]?.label}
         </span>
       </motion.div>
@@ -335,12 +391,12 @@ const CinematicVisual: React.FC<CinematicVisualProps> = ({ visual, reducedMotion
         whileInView={{ opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 1.1, ease: easeOut }}
-        className="hidden md:flex absolute -right-4 lg:-right-8 bottom-[14%] items-center gap-2 px-3.5 py-2 rounded-full bg-[#0c0c10]/95 border border-white/10 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        className="absolute -right-2 bottom-[16%] hidden items-center gap-2 rounded-full border border-[#25D366]/25 bg-[#111b21]/95 px-3 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur-md md:flex lg:-right-6"
       >
-        <span className="w-5 h-5 rounded-full bg-[#00D2FF]/15 border border-[#00D2FF]/40 flex items-center justify-center">
-          <Zap className="w-3 h-3 text-[#00D2FF]" strokeWidth={2.4} />
+        <span className="flex h-5 w-5 items-center justify-center rounded-full border border-[#25D366]/40 bg-[#25D366]/15">
+          <Zap className="h-3 w-3 text-[#25D366]" strokeWidth={2.4} />
         </span>
-        <span className="text-[0.72rem] font-medium text-gray-200 whitespace-nowrap">
+        <span className="whitespace-nowrap text-[0.72rem] font-medium text-gray-200">
           {visual.badges[1]?.label}
         </span>
       </motion.div>

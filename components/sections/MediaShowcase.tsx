@@ -108,7 +108,7 @@ const MediaShowcase: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6, ease: easeOut }}
-          className="max-w-3xl mb-12 md:mb-14"
+          className="max-w-3xl mb-12 md:mb-14 section-intro-mobile md:text-left"
         >
           <div className="inline-flex items-center gap-3 mb-7">
             <span className="w-8 h-px bg-gradient-to-r from-transparent to-[#00D2FF]/70" />
@@ -121,7 +121,7 @@ const MediaShowcase: React.FC = () => {
             startOnInView
             startDelayMs={reducedMotion ? 0 : 320}
             charIntervalMs={reducedMotion ? 0 : 70}
-            className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-[-0.02em] mb-7"
+            className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.05] tracking-[-0.02em] mb-7 text-center md:text-left"
             segments={[
               { text: data.titleStart },
               {

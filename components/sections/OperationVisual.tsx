@@ -51,17 +51,17 @@ const OperationVisual: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl"
+          className="max-w-3xl section-intro-mobile md:text-left mx-auto md:mx-0"
         >
           <TypewriterHeadline
             as="h2"
             startOnInView
             startDelayMs={headingDelay * 1000}
             charIntervalMs={headingInterval}
-            className="text-3xl md:text-5xl font-bold text-white leading-tight mb-6"
+            className="text-3xl md:text-5xl font-bold text-white leading-tight mb-6 text-center md:text-left"
             segments={[
               { text: 'Processos, vendas e IA operando em uma ' },
-              { text: 'unica esteira comercial', className: GRADIENTS.text },
+              { text: 'única esteira comercial', className: GRADIENTS.text },
               { text: '.' },
             ]}
           />
@@ -70,10 +70,10 @@ const OperationVisual: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45, delay: titleDoneDelay }}
-            className="text-gray-300/90 text-base md:text-lg leading-relaxed max-w-2xl"
+            className="text-gray-300/90 text-base md:text-lg leading-relaxed max-w-2xl mx-auto md:mx-0"
           >
-            Da captacao ao fechamento: campanhas, CRM, automacoes, dashboards e leitura de dados em um fluxo
-            unico. A camada visual representa seu time em operacao real, com foco em previsibilidade e escala.
+            Da captação ao fechamento, campanhas, CRM, automações, dashboards e leitura de dados em um fluxo
+            único. A imagem representa sua equipe em operação real, com foco em previsibilidade e escala.
           </motion.p>
         </motion.div>
       </Container>

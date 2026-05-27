@@ -48,7 +48,7 @@ const SITE_CONFIG_PT = {
     titleHighlight: "central de operação",
     titleSuffix: " da agência",
     description:
-      "Sistema multi-cliente para organizar a operação da agência: CRM, tráfego, portal do cliente, agenda, automações, financeiro e analytics. A camada de IA apoia validações, priorização e leitura de cenário (sem substituir decisão). WhatsApp integrado, fluxos (ex.: n8n), login seguro e área admin. Interface moderna; backend e banco profissionais por trás.",
+      "Central multi-cliente com CRM, tráfego, portal, agenda, automações, financeiro e relatórios. IA apoia validação e priorização, com decisão humana. WhatsApp, fluxos automáticos, login seguro e área admin.",
   },
 
   about: {
@@ -310,7 +310,7 @@ export const getSiteConfig = (locale: Locale) => {
         titleHighlight: 'agency operations hub',
         titleSuffix: '',
         description:
-          'Multi-client system to organize your operation: CRM, traffic, client portal, scheduling, automations, finance and analytics — with an AI layer to support validation, prioritization and data reading (not replacement).',
+          'Multi-client hub with CRM, paid media, portal, scheduling, automations, finance and reports. AI supports validation and prioritization, with human-led decisions. WhatsApp, automated flows, secure login and admin area.',
       },
       about: {
         ...SITE_CONFIG_PT.about,

@@ -31,7 +31,7 @@ const OperationFlow: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '120px 0px 120px 0px' }}
         transition={{ duration: 0.6, ease: easeOut }}
-        className="relative z-10 max-w-4xl mb-10 md:mb-16"
+        className="relative z-10 max-w-4xl mb-10 md:mb-16 section-intro-mobile md:text-left"
       >
         <div className="inline-flex items-center gap-3 mb-7">
           <span className="w-8 h-px bg-gradient-to-r from-transparent to-[#00D2FF]/70" />
@@ -44,7 +44,7 @@ const OperationFlow: React.FC = () => {
           startOnInView
           startDelayMs={reducedMotion ? 0 : 320}
           charIntervalMs={reducedMotion ? 0 : 70}
-          className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.1] tracking-[-0.02em] mb-6 md:mb-7"
+          className="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.1] tracking-[-0.02em] mb-6 md:mb-7 text-center md:text-left"
           segments={[
             { text: `${eco.title}\n` },
             { text: eco.titleHighlight, className: GRADIENTS.text },

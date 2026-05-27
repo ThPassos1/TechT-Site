@@ -23,6 +23,27 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Intro de seção: centralizada no mobile, alinhada à esquerda no desktop */
+@media (max-width: 767px) {
+  .section-intro-mobile {
+    text-align: center;
+  }
+
+  .section-intro-mobile > .inline-flex,
+  .section-intro-mobile > div.inline-flex {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .section-intro-mobile > p,
+  .section-intro-mobile .max-w-2xl,
+  .section-intro-mobile .max-w-3xl,
+  .section-intro-mobile .max-w-4xl {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 img,
 video {
   max-width: 100%;

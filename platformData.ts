@@ -9,7 +9,7 @@ export const PLATFORM_PREVIEW = {
   clientLabel: "Cliente em gestão",
   clientName: "Aurora Estética",
   moduleCaption:
-    "Módulo Core com design premium, motion design, analytics e operações em tempo real.",
+    "Panorama da operação com métricas, rotinas e sinais importantes em tempo real.",
   adminLabel: "Administrador TechT — Visão Admin",
 
   sidebar: [

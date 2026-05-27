@@ -4,7 +4,6 @@ import { motion, useReducedMotion } from 'framer-motion';
 import Container from '../ui/Container';
 import { GRADIENTS, SOCIALS, EMAIL_JS_CONFIG, whatsappPrefill } from '../../constants';
 import { useContactForm } from '../../hooks/useContactForm';
-import { BorderBeam } from '../effects/BorderBeam';
 import GlowBorder from '../effects/GlowBorder';
 import { trackFormSubmit, trackWhatsAppClick } from '../analytics/GoogleTagManager';
 import { useSiteConfig } from '../../hooks/useSiteConfig';
@@ -217,16 +216,8 @@ const Contact: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="relative p-8 rounded-3xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/20 backdrop-blur-2xl overflow-hidden group"
+            className="relative p-8 rounded-3xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/20 backdrop-blur-2xl overflow-hidden"
           >
-            {/* BorderBeam effect on hover */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl overflow-hidden">
-              <BorderBeam colorFrom="#00D2FF" colorTo="#9D50BB" duration={12} />
-            </div>
-
-            {/* Shine effect overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">{ui.contactName}</label>
