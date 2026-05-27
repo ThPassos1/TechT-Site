@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from './components/layout/Header';
@@ -59,46 +59,137 @@ const ScrollToSection = () => {
   return null;
 };
 
+type SeoEntry = {
+  title: string;
+  description: string;
+  keywords: string[];
+  canonicalPath: string;
+  noindex?: boolean;
+};
+
+const SEO_ROUTES_PT: Record<string, SeoEntry> = {
+  '/': {
+    title: 'TechT | Agência de marketing, tecnologia e automação com IA em Manaus',
+    description:
+      'Agência de marketing e tecnologia em Manaus especializada em tráfego pago, social media, produção audiovisual, criação de sites, automação com inteligência artificial e agentes de IA para WhatsApp.',
+    keywords: [
+      'agência de marketing em Manaus',
+      'agência de tráfego pago em Manaus',
+      'social media em Manaus',
+      'automação com IA em Manaus',
+      'criação de sites em Manaus',
+      'agência de tecnologia em Manaus',
+      'inteligência artificial para empresas',
+      'agentes de IA para WhatsApp',
+      'produção audiovisual em Manaus',
+    ],
+    canonicalPath: '/',
+  },
+  '/agencia-marketing-manaus': {
+    title: 'Agência de Marketing em Manaus | TechT',
+    description:
+      'Estrutura de operação de marketing em Manaus com tráfego pago, social media, conteúdo e inteligência aplicada para crescimento previsível.',
+    keywords: [
+      'agência de marketing em Manaus',
+      'marketing digital em Manaus',
+      'agência TechT Manaus',
+    ],
+    canonicalPath: '/agencia-marketing-manaus',
+  },
+  '/trafego-pago-manaus': {
+    title: 'Agência de Tráfego Pago em Manaus | TechT',
+    description:
+      'Gestão de tráfego pago em Manaus com estratégia, criativos, otimização contínua e leitura de dados para aumentar conversões.',
+    keywords: ['tráfego pago em Manaus', 'Meta Ads Manaus', 'Google Ads Manaus'],
+    canonicalPath: '/trafego-pago-manaus',
+  },
+  '/social-media-manaus': {
+    title: 'Social Media em Manaus | TechT',
+    description:
+      'Social media em Manaus com planejamento editorial, produção de conteúdo, reels e direção criativa para marcas que querem autoridade.',
+    keywords: ['social media em Manaus', 'reels em Manaus', 'conteúdo para redes sociais'],
+    canonicalPath: '/social-media-manaus',
+  },
+  '/automacao-ia-manaus': {
+    title: 'Automação com IA em Manaus | TechT',
+    description:
+      'Automação com inteligência artificial para empresas em Manaus, com agentes de IA para WhatsApp, CRM e rotina comercial.',
+    keywords: [
+      'automação com IA em Manaus',
+      'inteligência artificial para empresas',
+      'agentes de IA para WhatsApp',
+    ],
+    canonicalPath: '/automacao-ia-manaus',
+  },
+  '/criacao-sites-manaus': {
+    title: 'Criação de Sites em Manaus | TechT',
+    description:
+      'Criação de sites em Manaus com foco em performance, posicionamento premium, conversão e integração com mídia e operação comercial.',
+    keywords: ['criação de sites em Manaus', 'desenvolvimento web em Manaus', 'site para empresas'],
+    canonicalPath: '/criacao-sites-manaus',
+  },
+};
+
+const SEO_ROUTES_EN: Record<string, SeoEntry> = {
+  '/': {
+    title: 'TechT | Marketing, technology and AI automation in Manaus',
+    description:
+      'TechT is a premium agency in Manaus combining paid media, social media, audiovisual production, websites and AI automation for business growth.',
+    keywords: [
+      'marketing agency in Manaus',
+      'paid media Manaus',
+      'social media Manaus',
+      'AI automation for business',
+    ],
+    canonicalPath: '/',
+  },
+};
+
+const FUTURE_SEO_PATHS = [
+  '/agencia-marketing-manaus',
+  '/trafego-pago-manaus',
+  '/social-media-manaus',
+  '/automacao-ia-manaus',
+  '/criacao-sites-manaus',
+] as const;
+
 const HomePage = () => {
   const { locale } = useAppPreferences();
-  const seo = locale === 'pt'
-    ? {
-        title: 'TechT — Marketing empresarial completo e Ecossistema TechT (Manaus e remoto)',
-        description:
-          'Pacote de marketing empresarial: tráfego, conteúdo, páginas, WhatsApp e plataforma Ecossistema TechT — CRM, mídia e números num só lugar. IA apoia análises e decisões. Manaus e remoto.',
-        keywords: [
-          'TechT',
-          'marketing empresarial',
-          'agência de marketing Manaus',
-          'tráfego pago Meta Ads',
-          'Google Ads Manaus',
-          'Ecossistema TechT',
-          'CRM integrado',
-          'automação WhatsApp',
-          'landing page conversão',
-          'e-commerce',
-          'sistemas sob medida',
-        ],
-      }
-    : {
-        title: 'TechT — Full marketing operation and TechT Ecosystem',
-        description:
-          'Complete marketing package: paid media, content, landing pages, WhatsApp and TechT Ecosystem platform with CRM, media and metrics in one place.',
-        keywords: [
-          'TechT',
-          'marketing operation',
-          'performance marketing',
-          'Meta Ads',
-          'Google Ads',
-          'CRM platform',
-          'marketing automation',
-          'landing page conversion',
-        ],
-      };
+  const location = useLocation();
+  const siteUrl = (import.meta.env.VITE_SITE_URL || 'https://techt-site.vercel.app').replace(/\/$/, '');
+  const activeMap = locale === 'pt' ? SEO_ROUTES_PT : SEO_ROUTES_EN;
+
+  const seo = useMemo(() => {
+    const currentPath = location.pathname || '/';
+    const fallback = activeMap['/'];
+    const entry = activeMap[currentPath] ?? fallback;
+    return {
+      ...entry,
+      url: `${siteUrl}${currentPath}`,
+      canonical: `${siteUrl}${entry.canonicalPath}`,
+    };
+  }, [activeMap, location.pathname, siteUrl]);
 
   return (
     <main>
-      <SEOHead title={seo.title} description={seo.description} keywords={seo.keywords} />
+      <SEOHead
+        title={seo.title}
+        description={seo.description}
+        keywords={seo.keywords}
+        url={seo.url}
+        canonical={seo.canonical}
+      />
+      <section className="sr-only" aria-label="SEO local da TechT">
+        <h2>Agência de marketing e tecnologia em Manaus</h2>
+        <p>
+          A TechT atende empresas em Manaus com tráfego pago, social media, produção audiovisual,
+          criação de conteúdo, branding, criação de sites, desenvolvimento web e automação com IA.
+        </p>
+        <p>
+          Implementamos inteligência artificial para empresas e agentes de IA para WhatsApp para
+          acelerar atendimento, qualificação e vendas.
+        </p>
+      </section>
       <Hero />
       <OperationVisual />
       <Offerings />
@@ -114,6 +205,7 @@ const HOME_ROUTES = new Set([
   '/portfolio',
   '/servicos',
   '/contato',
+  ...FUTURE_SEO_PATHS,
 ]);
 
 const App: React.FC = () => {
@@ -146,6 +238,11 @@ const App: React.FC = () => {
             <Route path="/portfolio" element={<HomePage />} />
             <Route path="/servicos" element={<HomePage />} />
             <Route path="/contato" element={<HomePage />} />
+            <Route path="/agencia-marketing-manaus" element={<HomePage />} />
+            <Route path="/trafego-pago-manaus" element={<HomePage />} />
+            <Route path="/social-media-manaus" element={<HomePage />} />
+            <Route path="/automacao-ia-manaus" element={<HomePage />} />
+            <Route path="/criacao-sites-manaus" element={<HomePage />} />
 
             {/* Blog */}
             <Route path="/blog" element={<Blog />} />

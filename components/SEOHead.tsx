@@ -13,7 +13,8 @@ interface SEOHeadProps {
   updatedDate?: string;
   keywords?: string[];
   canonical?: string;
-  schema?: Record<string, any>;
+  schema?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
@@ -39,8 +40,9 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   ],
   canonical,
   schema,
+  noindex = false,
 }) => {
-  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://techtai.com.br';
+  const siteUrl = (import.meta.env.VITE_SITE_URL || 'https://techt-site.vercel.app').replace(/\/$/, '');
   const resolvedUrl = url ?? siteUrl;
   const resolvedCanonical = canonical ?? `${siteUrl.replace(/\/$/, '')}/`;
 
@@ -62,7 +64,11 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       'https://www.instagram.com/techt.br/',
       WHATSAPP_URL,
     ],
-    image: image,
+    image,
+    areaServed: {
+      '@type': 'City',
+      name: 'Manaus',
+    },
   };
 
   // Schema.org Organization markup
@@ -71,7 +77,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     '@type': 'Organization',
     name: 'TechT',
     url: resolvedUrl,
-    logo: 'https://techtai.com.br/logo.svg',
+    logo: `${siteUrl}/logo.png`,
     description: description,
     sameAs: [
       'https://www.instagram.com/techt.br/',
@@ -103,6 +109,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 
   // Merge default schemas with custom
   const finalSchema = schema || localBusinessSchema;
+  const robots = noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large';
 
   return (
     <Helmet>
@@ -112,9 +119,11 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords.join(', ')} />
       <meta name="author" content={author} />
-      <meta name="robots" content="index,follow,max-image-preview:large" />
+      <meta name="robots" content={robots} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
+      <meta name="geo.region" content="BR-AM" />
+      <meta name="geo.placename" content="Manaus" />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
@@ -122,6 +131,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:site_name" content="TechT" />
       <meta property="og:locale" content="pt_BR" />
 
@@ -131,6 +141,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
+      <meta name="twitter:image:alt" content={title} />
 
       {/* Article specific */}
       {type === 'article' && publishedDate && (
@@ -144,6 +155,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       )}
 
       <link rel="canonical" href={canonical ?? resolvedCanonical} />
+      <link rel="alternate" hrefLang="pt-BR" href={resolvedCanonical} />
+      <link rel="alternate" hrefLang="x-default" href={resolvedCanonical} />
 
       {/* Schema.org JSON-LD */}
       <script type="application/ld+json">

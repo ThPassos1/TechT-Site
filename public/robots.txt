@@ -1,12 +1,4 @@
 User-agent: *
 Allow: /
 
-# Disallow crawling unnecessary paths
-Disallow: /admin/
-Disallow: /private/
-
-# Crawl delay
-Crawl-delay: 1
-
-# Sitemaps
-Sitemap: https://techtai.com.br/sitemap.xml
+Sitemap: https://techt-site.vercel.app/sitemap.xml

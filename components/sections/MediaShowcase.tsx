@@ -98,6 +98,7 @@ const MediaShowcase: React.FC = () => {
   return (
     <section
       id="portfolio"
+      aria-labelledby="media-producao-heading"
       className="relative py-24 md:py-32 overflow-hidden bg-[#040406] border-y border-white/5 scroll-mt-24"
     >
       <Backdrop />
@@ -118,6 +119,7 @@ const MediaShowcase: React.FC = () => {
           </div>
           <TypewriterHeadline
             as="h2"
+            id="media-producao-heading"
             startOnInView
             startDelayMs={reducedMotion ? 0 : 320}
             charIntervalMs={reducedMotion ? 0 : 70}
@@ -133,6 +135,10 @@ const MediaShowcase: React.FC = () => {
           />
           <p className="text-gray-400 text-lg md:text-xl leading-[1.6] max-w-2xl">
             {data.subtitle}
+          </p>
+          <p className="sr-only">
+            TechT atua como social media em Manaus com produção audiovisual, reels, campanhas,
+            direção criativa e produção cinematográfica para posicionamento premium e geração de demanda.
           </p>
         </motion.div>
 
