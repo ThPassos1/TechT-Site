@@ -119,6 +119,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords.join(', ')} />
       <meta name="author" content={author} />
+      <meta name="google-site-verification" content="ZSUpt6LKCPvAeSr4OqZHk0oO4R3o2yj6UTIKEzsg_aU" />
       <meta name="robots" content={robots} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
