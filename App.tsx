@@ -6,14 +6,15 @@ import Footer from './components/layout/Footer';
 import SEOHead from './components/SEOHead';
 // import { GoogleTagManager, trackPageView } from './components/analytics/GoogleTagManager'; // TODO: Ativar com GTM ID
 import Hero from './components/sections/Hero';
-import Offerings from './components/sections/Offerings';
 import Contact from './components/sections/Contact';
-import OperationVisual from './components/sections/OperationVisual';
 import { GoogleTagManager, trackPageView } from './components/analytics/GoogleTagManager';
 import { useAppPreferences } from './context/AppPreferencesContext';
 
 import Blog from './components/sections/blog.tsx';
 import BlogPost from "./components/sections/blog/BlogPost";
+
+const Offerings = React.lazy(() => import('./components/sections/Offerings'));
+const OperationVisual = React.lazy(() => import('./components/sections/OperationVisual'));
 
 // Hook de Scroll Automático
 const ScrollToSection = () => {
@@ -191,8 +192,12 @@ const HomePage = () => {
         </p>
       </section>
       <Hero />
-      <OperationVisual />
-      <Offerings />
+      <React.Suspense fallback={<div aria-hidden className="min-h-[420px]" />}>
+        <OperationVisual />
+      </React.Suspense>
+      <React.Suspense fallback={<div aria-hidden className="min-h-[640px]" />}>
+        <Offerings />
+      </React.Suspense>
       <Contact />
     </main>
   );

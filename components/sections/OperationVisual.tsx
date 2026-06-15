@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Container from '../ui/Container';
 import { GRADIENTS } from '../../constants';
@@ -11,6 +11,7 @@ import operationLoopPoster from '../../assets/videos/operation-loop-poster.jpg';
 const OperationVisual: React.FC = () => {
   const reducedMotion = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
   const headingDelay = reducedMotion ? 0 : 0.2;
   const headingInterval = reducedMotion ? 0 : 60;
   const headingText = 'Processos, vendas e IA operando em uma unica esteira comercial.';
@@ -28,11 +29,13 @@ const OperationVisual: React.FC = () => {
       const p = v.play();
       if (p && typeof p.catch === 'function') p.catch(() => undefined);
     };
-    tryPlay();
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) tryPlay();
+          if (e.isIntersecting) {
+            setShouldLoadVideo(true);
+            tryPlay();
+          }
         });
       },
       { threshold: 0.15 },
@@ -100,17 +103,19 @@ const OperationVisual: React.FC = () => {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="none"
               poster={operationLoopPoster}
               disablePictureInPicture
               controlsList="nodownload noplaybackrate noremoteplayback"
               aria-label="TechT — operação completa em fluxo único"
               className="block w-full h-full object-cover bg-black"
             >
-              {/* WebM/VP9 primeiro: 42% menor, browsers modernos preferem */}
-              <source src={operationLoopWebm} type="video/webm" />
-              {/* MP4/H.264 com +faststart como fallback universal */}
-              <source src={operationLoopMp4} type="video/mp4" />
+              {shouldLoadVideo ? (
+                <>
+                  <source src={operationLoopWebm} type="video/webm" />
+                  <source src={operationLoopMp4} type="video/mp4" />
+                </>
+              ) : null}
             </video>
 
             {/* Gradiente sutil na base para integrar com o fundo da seção */}

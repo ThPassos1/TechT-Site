@@ -2,13 +2,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Compass } from 'lucide-react';
 import Container from '../ui/Container';
-import Intelligence from './Intelligence';
 import { useSiteConfig } from '../../hooks/useSiteConfig';
 import { useAppPreferences } from '../../context/AppPreferencesContext';
 import WhatsAppCTA from '../ui/WhatsAppCTA';
 import OperationFlow from './OperationFlow';
-import MediaShowcase from './MediaShowcase';
-import AIAutomations from './AIAutomations';
+
+const MediaShowcase = React.lazy(() => import('./MediaShowcase'));
+const AIAutomations = React.lazy(() => import('./AIAutomations'));
+const Intelligence = React.lazy(() => import('./Intelligence'));
+
+const SectionFallback: React.FC<{ minHeight?: string }> = ({ minHeight = '320px' }) => (
+  <div aria-hidden className="w-full" style={{ minHeight }} />
+);
 
 const Offerings: React.FC = () => {
   const { offerings: o } = useSiteConfig();
@@ -24,11 +29,17 @@ const Offerings: React.FC = () => {
         <OperationFlow />
       </Container>
 
-      <MediaShowcase />
+      <React.Suspense fallback={<SectionFallback minHeight="480px" />}>
+        <MediaShowcase />
+      </React.Suspense>
 
-      <AIAutomations />
+      <React.Suspense fallback={<SectionFallback minHeight="420px" />}>
+        <AIAutomations />
+      </React.Suspense>
 
-      <Intelligence embedded />
+      <React.Suspense fallback={<SectionFallback minHeight="360px" />}>
+        <Intelligence embedded />
+      </React.Suspense>
 
       <Container className="relative pt-20 md:pt-24">
         <motion.div

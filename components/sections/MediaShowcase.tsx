@@ -10,6 +10,8 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Play, X } from 'lucide-react';
 import Container from '../ui/Container';
 import { useSiteConfig } from '../../hooks/useSiteConfig';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
+import { getMediaShowcaseItems } from '../../mediaShowcaseData';
 import WhatsAppCTA from '../ui/WhatsAppCTA';
 import TypewriterHeadline from '../effects/TypewriterHeadline';
 
@@ -35,7 +37,6 @@ type MediaShowcaseData = {
   closeLabel: string;
   emptyLabel: string;
   categories: readonly Category[];
-  items: readonly MediaItem[];
 };
 
 const easeOut = [0.22, 0.61, 0.36, 1] as const;
@@ -55,11 +56,13 @@ const sizeCols: Record<MediaSize, string> = {
 
 const MediaShowcase: React.FC = () => {
   const config = useSiteConfig();
+  const { locale } = useAppPreferences();
   const offerings = config.offerings as unknown as {
     mediaShowcase?: MediaShowcaseData;
     mediaCta?: { label: string; waMessage: string };
   };
   const data = offerings.mediaShowcase;
+  const mediaItems = useMemo(() => getMediaShowcaseItems(locale), [locale]);
   const mediaCta = offerings.mediaCta;
   const reducedMotion = !!useReducedMotion();
   const [selected, setSelected] = useState<string>('all');
@@ -73,9 +76,9 @@ const MediaShowcase: React.FC = () => {
 
   const filtered = useMemo(() => {
     if (!data) return [] as readonly MediaItem[];
-    if (selected === 'all') return data.items;
-    return data.items.filter((item) => item.category === selected);
-  }, [data, selected]);
+    if (selected === 'all') return mediaItems;
+    return mediaItems.filter((item) => item.category === selected);
+  }, [data, mediaItems, selected]);
 
   const handleClose = useCallback(() => setModal(null), []);
 
